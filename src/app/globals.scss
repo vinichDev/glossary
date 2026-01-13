@@ -38,6 +38,14 @@
   --space-10: 64px;
   --space-11: 80px;
 
+  --font-size-xs: 12px;
+  --font-size-sm: 13px;
+  --font-size-md: 14px;
+  --font-size-base: 16px;
+  --font-size-lg: 20px;
+  --font-size-xl: 22px;
+  --font-size-2xl: 36px;
+
   --radius-sm: 12px;
   --radius-md: 16px;
   --radius-lg: 20px;
@@ -45,6 +53,9 @@
 
   --shadow-soft: 0 10px 30px rgba(15, 23, 42, 0.35);
   --shadow-strong: 0 20px 60px rgba(15, 23, 42, 0.6);
+
+  --stroke-width-base: 2px;
+  --stroke-width-strong: 3px;
 }
 
 body {

@@ -12,12 +12,12 @@
 
 .listTitle {
   margin: 0;
-  font-size: 20px;
+  font-size: var(--font-size-lg);
   color: var(--color-title);
 }
 
 .listCount {
-  font-size: 14px;
+  font-size: var(--font-size-md);
   color: var(--color-muted-soft);
 }
 
@@ -59,6 +59,6 @@
 }
 
 .listItemHint {
-  font-size: 12px;
+  font-size: var(--font-size-xs);
   color: var(--color-muted-soft);
 }

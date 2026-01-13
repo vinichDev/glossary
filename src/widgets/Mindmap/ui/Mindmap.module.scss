@@ -17,13 +17,13 @@
 .title {
   margin: 0 0 var(--space-1);
   color: var(--color-title);
-  font-size: 22px;
+  font-size: var(--font-size-xl);
 }
 
 .subtitle {
   margin: 0;
   color: var(--color-muted);
-  font-size: 14px;
+  font-size: var(--font-size-md);
 }
 
 .canvas {
@@ -40,7 +40,7 @@
   background: var(--color-surface-strong);
   color: var(--color-text);
   border: 1px solid var(--color-border-strong);
-  font-size: 12px;
+  font-size: var(--font-size-xs);
   font-weight: 600;
 }
 
@@ -51,17 +51,17 @@
 
 .edge :global(.react-flow__edge-path) {
   stroke: var(--color-edge);
-  stroke-width: 2px;
+  stroke-width: var(--stroke-width-base);
 }
 
 .edgeHighlight :global(.edge-selected .react-flow__edge-path) {
   stroke: var(--color-warning);
-  stroke-width: 3px;
+  stroke-width: var(--stroke-width-strong);
 }
 
 .edgeHighlight :global(.edge-hovered .react-flow__edge-path) {
   stroke: var(--color-accent);
-  stroke-width: 3px;
+  stroke-width: var(--stroke-width-strong);
 }
 
 .edgeHighlight :global(.edge-hovered.edge-selected .react-flow__edge-path) {
