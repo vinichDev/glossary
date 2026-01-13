@@ -48,3 +48,13 @@
   border-color: #38bdf8;
   box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2);
 }
+
+.edge :global(.react-flow__edge-path) {
+  stroke: rgba(148, 163, 184, 0.55);
+  stroke-width: 2px;
+}
+
+.edgeActive :global(.react-flow__edge-path) {
+  stroke: #38bdf8;
+  stroke-width: 3px;
+}

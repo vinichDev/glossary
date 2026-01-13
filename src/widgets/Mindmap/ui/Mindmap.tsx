@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import ReactFlow, {
   Background,
   Controls,
@@ -56,6 +56,7 @@ const getLayoutedElements = (nodes: Node[], edges: Edge[]) => {
 };
 
 export const Mindmap = ({ terms, selectedId, onSelect }: MindmapProps) => {
+  const [hoveredId, setHoveredId] = useState<string | null>(null);
   const nodes = useMemo<Node[]>(() => {
     return terms.map((term) => ({
       id: term.id,
@@ -83,12 +84,17 @@ export const Mindmap = ({ terms, selectedId, onSelect }: MindmapProps) => {
             id: edgeId,
             source: term.id,
             target: relatedId,
-            type: "smoothstep"
+            type: "bezier",
+            className: classNames(styles.edge, {
+              [styles.edgeActive]:
+                hoveredId !== null &&
+                (term.id === hoveredId || relatedId === hoveredId)
+            })
           }
         ];
       })
     );
-  }, [terms]);
+  }, [terms, hoveredId]);
 
   const layoutedNodes = useMemo(
     () => getLayoutedElements(nodes, edges),
@@ -114,6 +120,8 @@ export const Mindmap = ({ terms, selectedId, onSelect }: MindmapProps) => {
           nodesConnectable={false}
           elementsSelectable={false}
           onNodeClick={(_, node) => onSelect(node.id)}
+          onNodeMouseEnter={(_, node) => setHoveredId(node.id)}
+          onNodeMouseLeave={() => setHoveredId(null)}
         >
           <MiniMap
             nodeColor={() => "#38bdf8"}
