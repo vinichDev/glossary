@@ -147,7 +147,7 @@ export const Mindmap = ({ terms, selectedId, onSelect }: MindmapProps) => {
           </p>
         </div>
       </div>
-      <div className={styles.canvas} ref={wrapperRef}>
+      <div className={classNames(styles.canvas, styles.edgeHighlight)} ref={wrapperRef}>
         <ReactFlow
           nodes={layoutedNodes}
           edges={edges}
