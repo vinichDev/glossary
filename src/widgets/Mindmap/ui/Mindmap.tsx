@@ -1,12 +1,13 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import ReactFlow, {
   Background,
   Controls,
   MiniMap,
   Node,
-  Edge
+  Edge,
+  Position
 } from "reactflow";
 import "reactflow/dist/style.css";
 import classNames from "classnames";
@@ -56,11 +57,14 @@ const getLayoutedElements = (nodes: Node[], edges: Edge[]) => {
 };
 
 export const Mindmap = ({ terms, selectedId, onSelect }: MindmapProps) => {
-  const [hoveredId, setHoveredId] = useState<string | null>(null);
+  const wrapperRef = useRef<HTMLDivElement | null>(null);
+  const hoveredIdRef = useRef<string | null>(null);
   const nodes = useMemo<Node[]>(() => {
     return terms.map((term) => ({
       id: term.id,
       position: { x: 0, y: 0 },
+      sourcePosition: Position.Right,
+      targetPosition: Position.Left,
       data: {
         label: term.title
       },
@@ -84,22 +88,54 @@ export const Mindmap = ({ terms, selectedId, onSelect }: MindmapProps) => {
             id: edgeId,
             source: term.id,
             target: relatedId,
-            type: "bezier",
-            className: classNames(styles.edge, {
-              [styles.edgeActive]:
-                hoveredId !== null &&
-                (term.id === hoveredId || relatedId === hoveredId)
-            })
+            type: "smoothstep",
+            pathOptions: { borderRadius: 24 },
+            className: classNames(
+              styles.edge,
+              `edge-source-${term.id}`,
+              `edge-target-${relatedId}`
+            )
           }
         ];
       })
     );
-  }, [terms, hoveredId]);
+  }, [terms]);
 
   const layoutedNodes = useMemo(
     () => getLayoutedElements(nodes, edges),
     [nodes, edges]
   );
+
+  const clearEdgeClass = (className: string) => {
+    if (!wrapperRef.current) {
+      return;
+    }
+    const edgesToClear = wrapperRef.current.querySelectorAll<SVGGElement>(
+      `.react-flow__edge.${className}`
+    );
+    edgesToClear.forEach((edgeElement) => {
+      edgeElement.classList.remove(className);
+    });
+  };
+
+  const highlightEdgesForId = (id: string, className: string) => {
+    if (!wrapperRef.current) {
+      return;
+    }
+    const edgesToHighlight = wrapperRef.current.querySelectorAll<SVGGElement>(
+      `.react-flow__edge.edge-source-${id}, .react-flow__edge.edge-target-${id}`
+    );
+    edgesToHighlight.forEach((edgeElement) => {
+      edgeElement.classList.add(className);
+    });
+  };
+
+  useEffect(() => {
+    clearEdgeClass("edge-selected");
+    if (selectedId) {
+      highlightEdgesForId(selectedId, "edge-selected");
+    }
+  }, [selectedId]);
 
   return (
     <div className={styles.wrapper}>
@@ -111,7 +147,7 @@ export const Mindmap = ({ terms, selectedId, onSelect }: MindmapProps) => {
           </p>
         </div>
       </div>
-      <div className={styles.canvas}>
+      <div className={styles.canvas} ref={wrapperRef}>
         <ReactFlow
           nodes={layoutedNodes}
           edges={edges}
@@ -120,8 +156,23 @@ export const Mindmap = ({ terms, selectedId, onSelect }: MindmapProps) => {
           nodesConnectable={false}
           elementsSelectable={false}
           onNodeClick={(_, node) => onSelect(node.id)}
-          onNodeMouseEnter={(_, node) => setHoveredId(node.id)}
-          onNodeMouseLeave={() => setHoveredId(null)}
+          onNodeMouseEnter={(_, node) => {
+            if (hoveredIdRef.current === node.id) {
+              return;
+            }
+            if (hoveredIdRef.current) {
+              clearEdgeClass("edge-hovered");
+            }
+            hoveredIdRef.current = node.id;
+            highlightEdgesForId(node.id, "edge-hovered");
+          }}
+          onNodeMouseLeave={() => {
+            if (!hoveredIdRef.current) {
+              return;
+            }
+            clearEdgeClass("edge-hovered");
+            hoveredIdRef.current = null;
+          }}
         >
           <MiniMap
             nodeColor={() => "#38bdf8"}

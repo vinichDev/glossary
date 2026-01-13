@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import styles from "./Glossary.module.scss";
 import { terms } from "@/shared/data/terms";
 import { TermCard } from "@/shared/ui/TermCard/TermCard";
@@ -9,11 +9,22 @@ import { Mindmap } from "@/widgets/Mindmap/ui/Mindmap";
 
 export const Glossary = () => {
   const [selectedId, setSelectedId] = useState<string | null>(terms[0]?.id ?? null);
+  const cardRef = useRef<HTMLDivElement | null>(null);
 
   const selectedTerm = useMemo(
     () => terms.find((term) => term.id === selectedId) ?? null,
     [selectedId]
   );
+
+  useEffect(() => {
+    if (!cardRef.current) {
+      return;
+    }
+    const isMobile = window.matchMedia("(max-width: 768px)").matches;
+    if (isMobile) {
+      cardRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [selectedId]);
 
   return (
     <main className={styles.page}>
@@ -31,7 +42,9 @@ export const Glossary = () => {
       <section className={styles.listSection}>
         <div className={styles.listGrid}>
           <TermList terms={terms} selectedId={selectedId} onSelect={setSelectedId} />
-          <TermCard term={selectedTerm} />
+          <div ref={cardRef}>
+            <TermCard term={selectedTerm} />
+          </div>
         </div>
       </section>
     </main>

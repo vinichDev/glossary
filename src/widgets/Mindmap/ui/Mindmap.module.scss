@@ -54,7 +54,12 @@
   stroke-width: 2px;
 }
 
-.edgeActive :global(.react-flow__edge-path) {
+:global(.edge-selected) .react-flow__edge-path {
+  stroke: #fbbf24;
+  stroke-width: 3px;
+}
+
+:global(.edge-hovered) .react-flow__edge-path {
   stroke: #38bdf8;
   stroke-width: 3px;
 }
