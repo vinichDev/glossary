@@ -1,12 +1,21 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import dynamic from "next/dynamic";
 import styles from "./Glossary.module.scss";
 import { termSummaries } from "@/shared/data/termSummaries";
-import { TermCard } from "@/shared/ui/TermCard/TermCard";
 import { TermList } from "@/entities/term/ui/TermList";
 import { Mindmap } from "@/widgets/Mindmap/ui/Mindmap";
-import { Term } from "@/shared/types/term";
+import { Term, TermSummary } from "@/shared/types/term";
+
+const TermCard = dynamic(
+  () => import("@/shared/ui/TermCard/TermCard").then((mod) => mod.TermCard),
+  {
+    loading: () => (
+      <div className={styles.cardLoading}>Загрузка карточки...</div>
+    )
+  }
+);
 
 export const Glossary = () => {
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -14,6 +23,25 @@ export const Glossary = () => {
   const [isCardOpen, setIsCardOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const cardRef = useRef<HTMLDivElement | null>(null);
+
+  const termSummaryMap = useMemo(() => {
+    return termSummaries.reduce<Record<string, TermSummary>>(
+      (accumulator, term) => {
+        accumulator[term.id] = term;
+        return accumulator;
+      },
+      {}
+    );
+  }, []);
+
+  const relatedTerms = useMemo(() => {
+    if (!selectedTerm) {
+      return [];
+    }
+    return selectedTerm.related
+      .map((relatedId) => termSummaryMap[relatedId])
+      .filter(Boolean);
+  }, [selectedTerm, termSummaryMap]);
 
   useEffect(() => {
     if (!selectedId) {
@@ -23,6 +51,7 @@ export const Glossary = () => {
     }
 
     const controller = new AbortController();
+    setSelectedTerm(null);
     setIsLoading(true);
     setIsCardOpen(true);
 
@@ -113,6 +142,8 @@ export const Glossary = () => {
                     }
                   : selectedTerm
               }
+              relatedTerms={relatedTerms}
+              onRelatedSelect={(id) => setSelectedId(id)}
             />
           </div>
         </div>

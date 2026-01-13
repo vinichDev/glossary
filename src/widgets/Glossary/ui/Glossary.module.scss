@@ -93,6 +93,13 @@
   border-color: rgba(56, 189, 248, 0.7);
 }
 
+.cardLoading {
+  color: rgba(226, 232, 240, 0.75);
+  font-size: 14px;
+  text-align: center;
+  padding: 24px 16px;
+}
+
 @media (max-width: 1024px) {
   .page {
     padding: 32px 24px 64px;

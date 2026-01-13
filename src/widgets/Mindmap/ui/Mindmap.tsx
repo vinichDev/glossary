@@ -4,7 +4,6 @@ import { useEffect, useMemo, useRef } from "react";
 import ReactFlow, {
   Background,
   Controls,
-  MiniMap,
   Node,
   Edge,
   Position,
@@ -187,10 +186,6 @@ export const Mindmap = ({ terms, selectedId, onSelect }: MindmapProps) => {
             hoveredIdRef.current = null;
           }}
         >
-          <MiniMap
-            nodeColor={() => "#38bdf8"}
-            maskColor="rgba(15, 23, 42, 0.6)"
-          />
           <Controls />
           <Background color="#334155" gap={16} />
         </ReactFlow>
