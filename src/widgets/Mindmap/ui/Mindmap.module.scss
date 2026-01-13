@@ -1,0 +1,50 @@
+.wrapper {
+  background: rgba(15, 23, 42, 0.9);
+  border-radius: 20px;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.title {
+  margin: 0 0 4px;
+  color: #f8fafc;
+  font-size: 22px;
+}
+
+.subtitle {
+  margin: 0;
+  color: rgba(226, 232, 240, 0.7);
+  font-size: 14px;
+}
+
+.canvas {
+  height: 320px;
+  width: 100%;
+  border-radius: 16px;
+  overflow: hidden;
+  background: rgba(15, 23, 42, 0.6);
+}
+
+.node {
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.9);
+  color: #e2e8f0;
+  border: 1px solid rgba(148, 163, 184, 0.6);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.nodeActive {
+  border-color: #38bdf8;
+  box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2);
+}
