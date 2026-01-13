@@ -2,10 +2,10 @@
 
 import classNames from "classnames";
 import styles from "./TermList.module.scss";
-import { Term } from "@/shared/types/term";
+import { TermSummary } from "@/shared/types/term";
 
 type TermListProps = {
-  terms: Term[];
+  terms: TermSummary[];
   selectedId: string | null;
   onSelect: (id: string) => void;
 };

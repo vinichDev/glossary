@@ -6,3 +6,5 @@ export type Term = {
   sourceUrl: string;
   related: string[];
 };
+
+export type TermSummary = Pick<Term, "id" | "title" | "related">;

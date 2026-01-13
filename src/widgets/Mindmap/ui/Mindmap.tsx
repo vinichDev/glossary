@@ -7,17 +7,18 @@ import ReactFlow, {
   MiniMap,
   Node,
   Edge,
-  Position
+  Position,
+  MarkerType
 } from "reactflow";
 import "reactflow/dist/style.css";
 import classNames from "classnames";
 import dagre from "dagre";
 
 import styles from "./Mindmap.module.scss";
-import { Term } from "@/shared/types/term";
+import { TermSummary } from "@/shared/types/term";
 
 type MindmapProps = {
-  terms: Term[];
+  terms: TermSummary[];
   selectedId: string | null;
   onSelect: (id: string) => void;
 };
@@ -90,6 +91,18 @@ export const Mindmap = ({ terms, selectedId, onSelect }: MindmapProps) => {
             target: relatedId,
             type: "smoothstep",
             pathOptions: { borderRadius: 24 },
+            markerStart: {
+              type: MarkerType.Circle,
+              color: "#94a3b8",
+              width: 6,
+              height: 6
+            },
+            markerEnd: {
+              type: MarkerType.ArrowClosed,
+              color: "#94a3b8",
+              width: 12,
+              height: 12
+            },
             className: classNames(
               styles.edge,
               `edge-source-${term.id}`,

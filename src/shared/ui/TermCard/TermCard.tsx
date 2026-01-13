@@ -21,14 +21,16 @@ export const TermCard = ({ term }: TermCardProps) => {
         <h2 className={styles.cardTitle}>{term.title}</h2>
       </div>
       <p className={styles.cardDescription}>{term.description}</p>
-      <a
-        className={styles.cardSource}
-        href={term.sourceUrl}
-        target="_blank"
-        rel="noreferrer"
-      >
-        Источник: {term.source}
-      </a>
+      {term.sourceUrl && term.source && (
+        <a
+          className={styles.cardSource}
+          href={term.sourceUrl}
+          target="_blank"
+          rel="noreferrer"
+        >
+          Источник: {term.source}
+        </a>
+      )}
     </div>
   );
 };

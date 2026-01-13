@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { terms } from "@/shared/data/terms";
+import { termSummaries } from "@/shared/data/termSummaries";
 
 export const GET = async () => {
-  return NextResponse.json({ data: terms });
+  return NextResponse.json({ data: termSummaries });
 };
