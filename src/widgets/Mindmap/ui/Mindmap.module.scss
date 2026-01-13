@@ -55,11 +55,15 @@
 }
 
 .edgeHighlight :global(.edge-selected .react-flow__edge-path) {
-  stroke: #fbbf24;
+  stroke: #f97316;
   stroke-width: 3px;
 }
 
 .edgeHighlight :global(.edge-hovered .react-flow__edge-path) {
   stroke: #38bdf8;
   stroke-width: 3px;
+}
+
+.edgeHighlight :global(.edge-hovered.edge-selected .react-flow__edge-path) {
+  stroke: #38bdf8;
 }
