@@ -10,6 +10,7 @@ import ReactFlow, {
 } from "reactflow";
 import "reactflow/dist/style.css";
 import classNames from "classnames";
+import dagre from "dagre";
 
 import styles from "./Mindmap.module.scss";
 import { Term } from "@/shared/types/term";
@@ -20,23 +21,45 @@ type MindmapProps = {
   onSelect: (id: string) => void;
 };
 
-const getNodePositions = (count: number) => {
-  const radius = 180;
-  return Array.from({ length: count }, (_, index) => {
-    const angle = (index / count) * Math.PI * 2;
+const NODE_WIDTH = 150;
+const NODE_HEIGHT = 40;
+
+const getLayoutedElements = (nodes: Node[], edges: Edge[]) => {
+  const graph = new dagre.graphlib.Graph();
+  graph.setDefaultEdgeLabel(() => ({}));
+  graph.setGraph({
+    rankdir: "LR",
+    nodesep: 80,
+    ranksep: 100
+  });
+
+  nodes.forEach((node) => {
+    graph.setNode(node.id, { width: NODE_WIDTH, height: NODE_HEIGHT });
+  });
+
+  edges.forEach((edge) => {
+    graph.setEdge(edge.source, edge.target);
+  });
+
+  dagre.layout(graph);
+
+  return nodes.map((node) => {
+    const position = graph.node(node.id);
     return {
-      x: Math.cos(angle) * radius,
-      y: Math.sin(angle) * radius
+      ...node,
+      position: {
+        x: position.x - NODE_WIDTH / 2,
+        y: position.y - NODE_HEIGHT / 2
+      }
     };
   });
 };
 
 export const Mindmap = ({ terms, selectedId, onSelect }: MindmapProps) => {
   const nodes = useMemo<Node[]>(() => {
-    const positions = getNodePositions(terms.length);
-    return terms.map((term, index) => ({
+    return terms.map((term) => ({
       id: term.id,
-      position: positions[index],
+      position: { x: 0, y: 0 },
       data: {
         label: term.title
       },
@@ -67,6 +90,11 @@ export const Mindmap = ({ terms, selectedId, onSelect }: MindmapProps) => {
     );
   }, [terms]);
 
+  const layoutedNodes = useMemo(
+    () => getLayoutedElements(nodes, edges),
+    [nodes, edges]
+  );
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.header}>
@@ -79,7 +107,7 @@ export const Mindmap = ({ terms, selectedId, onSelect }: MindmapProps) => {
       </div>
       <div className={styles.canvas}>
         <ReactFlow
-          nodes={nodes}
+          nodes={layoutedNodes}
           edges={edges}
           fitView
           nodesDraggable={false}
