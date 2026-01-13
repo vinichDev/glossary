@@ -1,11 +1,11 @@
 .wrapper {
-  background: rgba(15, 23, 42, 0.9);
-  border-radius: 20px;
-  border: 1px solid rgba(148, 163, 184, 0.2);
-  padding: 20px;
+  background: var(--color-surface-strong);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  padding: var(--space-5);
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--space-3);
 }
 
 .header {
@@ -15,55 +15,55 @@
 }
 
 .title {
-  margin: 0 0 4px;
-  color: #f8fafc;
+  margin: 0 0 var(--space-1);
+  color: var(--color-title);
   font-size: 22px;
 }
 
 .subtitle {
   margin: 0;
-  color: rgba(226, 232, 240, 0.7);
+  color: var(--color-muted);
   font-size: 14px;
 }
 
 .canvas {
   height: 320px;
   width: 100%;
-  border-radius: 16px;
+  border-radius: var(--radius-md);
   overflow: hidden;
-  background: rgba(15, 23, 42, 0.6);
+  background: var(--color-surface-soft);
 }
 
 .node {
-  padding: 8px 12px;
-  border-radius: 999px;
-  background: rgba(15, 23, 42, 0.9);
-  color: #e2e8f0;
-  border: 1px solid rgba(148, 163, 184, 0.6);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface-strong);
+  color: var(--color-text);
+  border: 1px solid var(--color-border-strong);
   font-size: 12px;
   font-weight: 600;
 }
 
 .nodeActive {
-  border-color: #38bdf8;
-  box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2);
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 2px var(--color-accent-glow);
 }
 
 .edge :global(.react-flow__edge-path) {
-  stroke: rgba(148, 163, 184, 0.55);
+  stroke: var(--color-edge);
   stroke-width: 2px;
 }
 
 .edgeHighlight :global(.edge-selected .react-flow__edge-path) {
-  stroke: #f97316;
+  stroke: var(--color-warning);
   stroke-width: 3px;
 }
 
 .edgeHighlight :global(.edge-hovered .react-flow__edge-path) {
-  stroke: #38bdf8;
+  stroke: var(--color-accent);
   stroke-width: 3px;
 }
 
 .edgeHighlight :global(.edge-hovered.edge-selected .react-flow__edge-path) {
-  stroke: #38bdf8;
+  stroke: var(--color-accent);
 }
