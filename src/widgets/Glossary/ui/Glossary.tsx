@@ -65,7 +65,7 @@ export const Glossary = () => {
           <h1 className={styles.title}>Глоссарий терминов</h1>
           <a
             className={styles.repoLink}
-            href="https://github.com/brendanburns/dictionary-server"
+            href="https://github.com/vinichDev/glossary"
             target="_blank"
             rel="noreferrer"
           >
