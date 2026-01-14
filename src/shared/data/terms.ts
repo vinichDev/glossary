@@ -82,7 +82,7 @@ export const terms: Term[] = [
       "Механизм React для показа fallback-интерфейса, пока часть дерева UI «ожидает» данные/код и не может быть отрендерена.",
     source: "<Suspense> — React Docs",
     sourceUrl: "https://react.dev/reference/react/Suspense",
-    related: ["streaming", "loading-ui"]
+    related: ["streaming"]
   },
   {
     id: "rsc",
@@ -147,25 +147,7 @@ export const terms: Term[] = [
       "Маршрутизация на основе каталога app, построенная вокруг Server/Client Components, layouts и возможностей streaming/Suspense.",
     source: "App Router — Next.js Docs",
     sourceUrl: "https://nextjs.org/docs/app",
-    related: ["rsc", "route-handlers", "server-actions", "layout", "parallel-routes"]
-  },
-  {
-    id: "layout",
-    title: "layout.js (Layout)",
-    description:
-      "Специальный файл для описания layout’а сегмента маршрута; root layout задаёт общие <html> и <body> и глобальный UI.",
-    source: "layout.js — Next.js Docs",
-    sourceUrl: "https://nextjs.org/docs/app/api-reference/file-conventions/layout",
-    related: ["app-router", "parallel-routes"]
-  },
-  {
-    id: "loading-ui",
-    title: "loading.js (Loading UI)",
-    description:
-      "Специальный файл для отображения мгновенного состояния загрузки, построенного на Suspense; полезен при streaming.",
-    source: "loading.js — Next.js Docs",
-    sourceUrl: "https://nextjs.org/docs/app/api-reference/file-conventions/loading",
-    related: ["suspense", "streaming", "app-router"]
+    related: ["rsc", "route-handlers", "server-actions", "parallel-routes"]
   },
   {
     id: "parallel-routes",
@@ -175,7 +157,7 @@ export const terms: Term[] = [
     source: "Parallel Routes — Next.js Docs",
     sourceUrl:
       "https://nextjs.org/docs/app/api-reference/file-conventions/parallel-routes",
-    related: ["app-router", "layout", "intercepting-routes"]
+    related: ["app-router", "intercepting-routes"]
   },
   {
     id: "intercepting-routes",
@@ -224,16 +206,7 @@ export const terms: Term[] = [
       "Механизм App Router для создания обработчиков запросов для маршрута с использованием Web Request/Response APIs.",
     source: "Route Handlers — Next.js Docs",
     sourceUrl: "https://nextjs.org/docs/app/getting-started/route-handlers",
-    related: ["route-file", "app-router"]
-  },
-  {
-    id: "route-file",
-    title: "route.js (route.ts)",
-    description:
-      "Специальный файл App Router для описания HTTP-обработчиков маршрута (GET/POST/PUT/PATCH/DELETE и т.д.).",
-    source: "route.js — Next.js Docs",
-    sourceUrl: "https://nextjs.org/docs/app/api-reference/file-conventions/route",
-    related: ["route-handlers", "app-router"]
+    related: ["app-router"]
   },
   {
     id: "server-actions",

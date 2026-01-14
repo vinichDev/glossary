@@ -44,7 +44,7 @@ export const termSummaries: TermSummary[] = [
   {
     id: "suspense",
     title: "React Suspense",
-    related: ["streaming", "loading-ui"]
+    related: ["streaming"]
   },
   {
     id: "rsc",
@@ -79,22 +79,12 @@ export const termSummaries: TermSummary[] = [
   {
     id: "app-router",
     title: "App Router",
-    related: ["rsc", "route-handlers", "server-actions", "layout", "parallel-routes"]
-  },
-  {
-    id: "layout",
-    title: "layout.js (Layout)",
-    related: ["app-router", "parallel-routes"]
-  },
-  {
-    id: "loading-ui",
-    title: "loading.js (Loading UI)",
-    related: ["suspense", "streaming", "app-router"]
+    related: ["rsc", "route-handlers", "server-actions", "parallel-routes"]
   },
   {
     id: "parallel-routes",
     title: "Parallel Routes",
-    related: ["app-router", "layout", "intercepting-routes"]
+    related: ["app-router", "intercepting-routes"]
   },
   {
     id: "intercepting-routes",
@@ -119,12 +109,7 @@ export const termSummaries: TermSummary[] = [
   {
     id: "route-handlers",
     title: "Route Handlers",
-    related: ["route-file", "app-router"]
-  },
-  {
-    id: "route-file",
-    title: "route.js (route.ts)",
-    related: ["route-handlers", "app-router"]
+    related: ["app-router"]
   },
   {
     id: "server-actions",
