@@ -49,6 +49,8 @@ export const Mindmap = ({ terms, selectedId, onSelect }: MindmapProps) => {
     };
 
     cyInstance.batch(() => {
+      cyInstance.edges().removeClass("edge-hovered");
+
       const previousId = previousSelectedIdRef.current;
       if (previousId && previousId !== nextId) {
         updateSelectionClasses(previousId, "removeClass");
