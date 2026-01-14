@@ -15,7 +15,7 @@ import { createMindmapStyles } from "@/widgets/Mindmap/lib/mindmapStyles";
 let isDagreRegistered = false;
 
 type UseMindmapInstanceParams = {
-  containerRef: RefObject<HTMLDivElement | null>;
+  containerRef: RefObject<HTMLDivElement>;
   onSelect: (id: string) => void;
   onSelectionSync: (cyInstance: Core, nextId: string | null) => void;
 };

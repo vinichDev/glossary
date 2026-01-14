@@ -16,7 +16,7 @@ type MindmapProps = {
 };
 
 export const Mindmap = memo(({ terms, selectedId, onSelect }: MindmapProps) => {
-  const containerRef = useRef<HTMLDivElement | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const selectionSyncRef = useRef<(cy: Core, id: string | null) => void>(() => {
     return;
   });
