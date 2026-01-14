@@ -1,11 +1,22 @@
 "use client";
 
 import { useEffect, useMemo, useRef } from "react";
-import cytoscape, { Core, StylesheetCSS } from "cytoscape";
+import cytoscape, { Core } from "cytoscape";
 import dagre from "cytoscape-dagre";
 
 import styles from "./Mindmap.module.scss";
 import { TermSummary } from "@/shared/types/term";
+import {
+  FIT_PADDING,
+  LAYOUT_OPTIONS,
+  MAX_ZOOM,
+  MIN_ZOOM,
+  WHEEL_SENSITIVITY,
+  ZOOM_IN_FACTOR,
+  ZOOM_OUT_FACTOR
+} from "../lib/mindmapConfig";
+import { buildMindmapElements } from "../lib/mindmapElements";
+import { createMindmapStyles } from "../lib/mindmapStyles";
 
 type MindmapProps = {
   terms: TermSummary[];
@@ -13,20 +24,7 @@ type MindmapProps = {
   onSelect: (id: string) => void;
 };
 
-const NODE_WIDTH = 150;
-const NODE_HEIGHT = 40;
-
 let isDagreRegistered = false;
-
-const LAYOUT_OPTIONS = {
-  name: "dagre",
-  rankDir: "TB",
-  nodeSep: 40,
-  rankSep: 60,
-  ranker: "tight-tree",
-  padding: 20,
-  fit: true
-};
 
 export const Mindmap = ({ terms, selectedId, onSelect }: MindmapProps) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -38,39 +36,7 @@ export const Mindmap = ({ terms, selectedId, onSelect }: MindmapProps) => {
     onSelectRef.current = onSelect;
   }, [onSelect]);
 
-  const elements = useMemo(() => {
-    const seen = new Set<string>();
-    const nodeIds = new Set(terms.map((term) => term.id));
-    const nodes = terms.map((term) => ({
-      data: {
-        id: term.id,
-        label: term.title
-      }
-    }));
-    const edges = terms.flatMap((term) =>
-      term.related.flatMap((relatedId) => {
-        if (!nodeIds.has(relatedId)) {
-          return [];
-        }
-        const edgeId = [term.id, relatedId].sort().join("-");
-        if (seen.has(edgeId)) {
-          return [];
-        }
-        seen.add(edgeId);
-        return [
-          {
-            data: {
-              id: edgeId,
-              source: term.id,
-              target: relatedId
-            }
-          }
-        ];
-      })
-    );
-
-    return [...nodes, ...edges];
-  }, [terms]);
+  const elements = useMemo(() => buildMindmapElements(terms), [terms]);
 
   useEffect(() => {
     if (!containerRef.current) {
@@ -82,90 +48,16 @@ export const Mindmap = ({ terms, selectedId, onSelect }: MindmapProps) => {
       isDagreRegistered = true;
     }
 
-    const resolveCssVar = (name: string, fallback: string) => {
-      if (typeof window === "undefined") {
-        return fallback;
-      }
-      const value = getComputedStyle(document.documentElement)
-        .getPropertyValue(name)
-        .trim();
-      return value || fallback;
-    };
-
-    const cyStyles: StylesheetCSS[] = [
-      {
-        selector: "node",
-        style: {
-          label: "data(label)",
-          "text-valign": "center",
-          "text-halign": "center",
-          width: NODE_WIDTH,
-          height: NODE_HEIGHT,
-          "background-color": resolveCssVar(
-            "--color-surface-strong",
-            "#0f172a"
-          ),
-          "border-color": resolveCssVar("--color-border-strong", "#1e293b"),
-          "border-width": 1,
-          color: resolveCssVar("--color-text", "#e2e8f0"),
-          "font-size": 12,
-          "font-weight": "600",
-          "text-wrap": "wrap",
-          "text-max-width": NODE_WIDTH - 16,
-          shape: "round-rectangle"
-        }
-      },
-      {
-        selector: "edge",
-        style: {
-          "line-color": resolveCssVar("--color-edge", "#64748b"),
-          width: 2,
-          "curve-style": "bezier",
-          "target-arrow-shape": "triangle",
-          "target-arrow-color": resolveCssVar("--color-edge", "#64748b"),
-          "source-arrow-shape": "circle",
-          "source-arrow-color": resolveCssVar("--color-edge", "#64748b"),
-          "arrow-scale": 0.8
-        }
-      },
-      {
-        selector: ".node-active",
-        style: {
-          "border-color": resolveCssVar("--color-accent", "#38bdf8"),
-          "border-width": 2,
-          "shadow-blur": 8,
-          "shadow-color": resolveCssVar("--color-accent-glow", "#38bdf8"),
-          "shadow-opacity": 0.5
-        }
-      },
-      {
-        selector: ".edge-selected",
-        style: {
-          "line-color": resolveCssVar("--color-warning", "#f59e0b"),
-          width: 3,
-          "target-arrow-color": resolveCssVar("--color-warning", "#f59e0b"),
-          "source-arrow-color": resolveCssVar("--color-warning", "#f59e0b")
-        }
-      },
-      {
-        selector: ".edge-hovered",
-        style: {
-          "line-color": resolveCssVar("--color-accent", "#38bdf8"),
-          width: 3,
-          "target-arrow-color": resolveCssVar("--color-accent", "#38bdf8"),
-          "source-arrow-color": resolveCssVar("--color-accent", "#38bdf8")
-        }
-      }
-    ];
+    const cyStyles = createMindmapStyles();
 
     const cyInstance = cytoscape({
       container: containerRef.current,
       elements: [],
       style: cyStyles,
       layout: LAYOUT_OPTIONS,
-      minZoom: 0.2,
-      maxZoom: 2,
-      wheelSensitivity: 0.2
+      minZoom: MIN_ZOOM,
+      maxZoom: MAX_ZOOM,
+      wheelSensitivity: WHEEL_SENSITIVITY
     });
 
     cyInstance.on("tap", "node", (event) => {
@@ -196,7 +88,7 @@ export const Mindmap = ({ terms, selectedId, onSelect }: MindmapProps) => {
     cyInstance.elements().remove();
     cyInstance.add(elements);
     cyInstance.layout(LAYOUT_OPTIONS).run();
-    cyInstance.fit(undefined, 20);
+    cyInstance.fit(undefined, FIT_PADDING);
   }, [elements]);
 
   useEffect(() => {
@@ -239,7 +131,7 @@ export const Mindmap = ({ terms, selectedId, onSelect }: MindmapProps) => {
     if (!cy) {
       return;
     }
-    const nextZoom = Math.min(cy.zoom() * 1.2, 2);
+    const nextZoom = Math.min(cy.zoom() * ZOOM_IN_FACTOR, MAX_ZOOM);
     cy.zoom(nextZoom);
   };
 
@@ -248,7 +140,7 @@ export const Mindmap = ({ terms, selectedId, onSelect }: MindmapProps) => {
     if (!cy) {
       return;
     }
-    const nextZoom = Math.max(cy.zoom() * 0.8, 0.2);
+    const nextZoom = Math.max(cy.zoom() * ZOOM_OUT_FACTOR, MIN_ZOOM);
     cy.zoom(nextZoom);
   };
 
@@ -257,7 +149,7 @@ export const Mindmap = ({ terms, selectedId, onSelect }: MindmapProps) => {
     if (!cy) {
       return;
     }
-    cy.fit(undefined, 20);
+    cy.fit(undefined, FIT_PADDING);
   };
 
   return (
