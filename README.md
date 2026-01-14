@@ -1,6 +1,6 @@
 # Glossary
 
-Одностраничное приложение с глоссарием терминов, mindmap и Web API. Проект построен на Next.js App Router, TypeScript и SCSS, структура соответствует Feature-Sliced Design.
+Одностраничное приложение с глоссарием терминов, mindmap и Web API. Проект построен на Next.js App Router, TypeScript и SCSS, используя FSD
 
 ## Запуск локально
 
