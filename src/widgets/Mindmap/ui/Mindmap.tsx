@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef } from "react";
+import { useMemo, useRef } from "react";
 import ReactFlow, {
   Background,
   Controls,
@@ -83,6 +83,8 @@ export const Mindmap = ({ terms, selectedId, onSelect }: MindmapProps) => {
           return [];
         }
         seen.add(edgeId);
+        const isSelected =
+          selectedId === term.id || selectedId === relatedId;
         return [
           {
             id: edgeId,
@@ -105,13 +107,16 @@ export const Mindmap = ({ terms, selectedId, onSelect }: MindmapProps) => {
             className: classNames(
               styles.edge,
               `edge-source-${term.id}`,
-              `edge-target-${relatedId}`
+              `edge-target-${relatedId}`,
+              {
+                "edge-selected": isSelected
+              }
             )
           }
         ];
       })
     );
-  }, [terms]);
+  }, [terms, selectedId]);
 
   const layoutedNodes = useMemo(
     () => getLayoutedElements(nodes, edges),
@@ -141,13 +146,6 @@ export const Mindmap = ({ terms, selectedId, onSelect }: MindmapProps) => {
       edgeElement.classList.add(className);
     });
   };
-
-  useEffect(() => {
-    clearEdgeClass("edge-selected");
-    if (selectedId) {
-      highlightEdgesForId(selectedId, "edge-selected");
-    }
-  }, [selectedId]);
 
   return (
     <div className={styles.wrapper}>
