@@ -68,6 +68,15 @@ export const createMindmapStyles = (): StylesheetCSS[] => [
     }
   },
   {
+    selector: ".edge-selected.edge-hovered",
+    style: {
+      "line-color": resolveCssVar("--color-warning", "#f59e0b"),
+      width: 3,
+      "target-arrow-color": resolveCssVar("--color-warning", "#f59e0b"),
+      "source-arrow-color": resolveCssVar("--color-warning", "#f59e0b")
+    }
+  },
+  {
     selector: ".edge-hovered",
     style: {
       "line-color": resolveCssVar("--color-accent", "#38bdf8"),
