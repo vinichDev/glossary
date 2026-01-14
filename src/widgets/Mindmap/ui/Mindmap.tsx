@@ -1,17 +1,8 @@
 "use client";
 
-import { useMemo, useRef } from "react";
-import ReactFlow, {
-  Background,
-  Controls,
-  Node,
-  Edge,
-  Position,
-  MarkerType
-} from "reactflow";
-import "reactflow/dist/style.css";
-import classNames from "classnames";
-import dagre from "dagre";
+import { useEffect, useMemo, useRef } from "react";
+import cytoscape, { Core, Stylesheet } from "cytoscape";
+import dagre from "cytoscape-dagre";
 
 import styles from "./Mindmap.module.scss";
 import { TermSummary } from "@/shared/types/term";
@@ -25,127 +16,226 @@ type MindmapProps = {
 const NODE_WIDTH = 150;
 const NODE_HEIGHT = 40;
 
-const getLayoutedElements = (nodes: Node[], edges: Edge[]) => {
-  const graph = new dagre.graphlib.Graph();
-  graph.setDefaultEdgeLabel(() => ({}));
-  graph.setGraph({
-    rankdir: "TB",
-    nodesep: 40,
-    ranksep: 60,
-    ranker: "tight-tree"
-  });
+let isDagreRegistered = false;
 
-  nodes.forEach((node) => {
-    graph.setNode(node.id, { width: NODE_WIDTH, height: NODE_HEIGHT });
-  });
-
-  edges.forEach((edge) => {
-    graph.setEdge(edge.source, edge.target);
-  });
-
-  dagre.layout(graph);
-
-  return nodes.map((node) => {
-    const position = graph.node(node.id);
-    return {
-      ...node,
-      position: {
-        x: position.x - NODE_WIDTH / 2,
-        y: position.y - NODE_HEIGHT / 2
-      }
-    };
-  });
+const LAYOUT_OPTIONS = {
+  name: "dagre",
+  rankDir: "TB",
+  nodeSep: 40,
+  rankSep: 60,
+  ranker: "tight-tree",
+  padding: 20,
+  fit: true
 };
 
 export const Mindmap = ({ terms, selectedId, onSelect }: MindmapProps) => {
-  const wrapperRef = useRef<HTMLDivElement | null>(null);
-  const hoveredIdRef = useRef<string | null>(null);
-  const nodes = useMemo<Node[]>(() => {
-    return terms.map((term) => ({
-      id: term.id,
-      position: { x: 0, y: 0 },
-      sourcePosition: Position.Right,
-      targetPosition: Position.Left,
-      data: {
-        label: term.title
-      },
-      className: classNames(styles.node, {
-        [styles.nodeActive]: term.id === selectedId
-      })
-    }));
-  }, [terms, selectedId]);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const cyRef = useRef<Core | null>(null);
+  const onSelectRef = useRef(onSelect);
 
-  const edges = useMemo<Edge[]>(() => {
+  useEffect(() => {
+    onSelectRef.current = onSelect;
+  }, [onSelect]);
+
+  const elements = useMemo(() => {
     const seen = new Set<string>();
-    return terms.flatMap((term) =>
+    const nodes = terms.map((term) => ({
+      data: {
+        id: term.id,
+        label: term.title
+      }
+    }));
+    const edges = terms.flatMap((term) =>
       term.related.flatMap((relatedId) => {
         const edgeId = [term.id, relatedId].sort().join("-");
         if (seen.has(edgeId)) {
           return [];
         }
         seen.add(edgeId);
-        const isSelected =
-          selectedId === term.id || selectedId === relatedId;
         return [
           {
-            id: edgeId,
-            source: term.id,
-            target: relatedId,
-            type: "smoothstep",
-            pathOptions: { borderRadius: 24 },
-            markerStart: {
-              type: MarkerType.Circle,
-              color: "#94a3b8",
-              width: 6,
-              height: 6
-            },
-            markerEnd: {
-              type: MarkerType.ArrowClosed,
-              color: "#94a3b8",
-              width: 12,
-              height: 12
-            },
-            className: classNames(
-              styles.edge,
-              `edge-source-${term.id}`,
-              `edge-target-${relatedId}`,
-              {
-                "edge-selected": isSelected
-              }
-            )
+            data: {
+              id: edgeId,
+              source: term.id,
+              target: relatedId
+            }
           }
         ];
       })
     );
-  }, [terms, selectedId]);
 
-  const layoutedNodes = useMemo(
-    () => getLayoutedElements(nodes, edges),
-    [nodes, edges]
-  );
+    return [...nodes, ...edges];
+  }, [terms]);
 
-  const clearEdgeClass = (className: string) => {
-    if (!wrapperRef.current) {
+  useEffect(() => {
+    if (!containerRef.current) {
       return;
     }
-    const edgesToClear = wrapperRef.current.querySelectorAll<SVGGElement>(
-      `.react-flow__edge.${className}`
-    );
-    edgesToClear.forEach((edgeElement) => {
-      edgeElement.classList.remove(className);
+
+    if (!isDagreRegistered) {
+      cytoscape.use(dagre);
+      isDagreRegistered = true;
+    }
+
+    const resolveCssVar = (name: string, fallback: string) => {
+      if (typeof window === "undefined") {
+        return fallback;
+      }
+      const value = getComputedStyle(document.documentElement)
+        .getPropertyValue(name)
+        .trim();
+      return value || fallback;
+    };
+
+    const cyStyles: Stylesheet[] = [
+      {
+        selector: "node",
+        style: {
+          label: "data(label)",
+          "text-valign": "center",
+          "text-halign": "center",
+          width: NODE_WIDTH,
+          height: NODE_HEIGHT,
+          "background-color": resolveCssVar(
+            "--color-surface-strong",
+            "#0f172a"
+          ),
+          "border-color": resolveCssVar("--color-border-strong", "#1e293b"),
+          "border-width": 1,
+          color: resolveCssVar("--color-text", "#e2e8f0"),
+          "font-size": 12,
+          "font-weight": "600",
+          "text-wrap": "wrap",
+          "text-max-width": NODE_WIDTH - 16,
+          shape: "round-rectangle"
+        }
+      },
+      {
+        selector: "edge",
+        style: {
+          "line-color": resolveCssVar("--color-edge", "#64748b"),
+          width: 2,
+          "curve-style": "bezier",
+          "target-arrow-shape": "triangle",
+          "target-arrow-color": resolveCssVar("--color-edge", "#64748b"),
+          "source-arrow-shape": "circle",
+          "source-arrow-color": resolveCssVar("--color-edge", "#64748b"),
+          "arrow-scale": 0.8
+        }
+      },
+      {
+        selector: ".node-active",
+        style: {
+          "border-color": resolveCssVar("--color-accent", "#38bdf8"),
+          "border-width": 2,
+          "shadow-blur": 8,
+          "shadow-color": resolveCssVar("--color-accent-glow", "#38bdf8"),
+          "shadow-opacity": 0.5
+        }
+      },
+      {
+        selector: ".edge-selected",
+        style: {
+          "line-color": resolveCssVar("--color-warning", "#f59e0b"),
+          width: 3,
+          "target-arrow-color": resolveCssVar("--color-warning", "#f59e0b"),
+          "source-arrow-color": resolveCssVar("--color-warning", "#f59e0b")
+        }
+      },
+      {
+        selector: ".edge-hovered",
+        style: {
+          "line-color": resolveCssVar("--color-accent", "#38bdf8"),
+          width: 3,
+          "target-arrow-color": resolveCssVar("--color-accent", "#38bdf8"),
+          "source-arrow-color": resolveCssVar("--color-accent", "#38bdf8")
+        }
+      }
+    ];
+
+    const cyInstance = cytoscape({
+      container: containerRef.current,
+      elements: [],
+      style: cyStyles,
+      layout: LAYOUT_OPTIONS,
+      minZoom: 0.2,
+      maxZoom: 2,
+      wheelSensitivity: 0.2
     });
+
+    cyInstance.on("tap", "node", (event) => {
+      onSelectRef.current(event.target.id());
+    });
+
+    cyInstance.on("mouseover", "node", (event) => {
+      event.target.connectedEdges().addClass("edge-hovered");
+    });
+
+    cyInstance.on("mouseout", "node", (event) => {
+      event.target.connectedEdges().removeClass("edge-hovered");
+    });
+
+    cyRef.current = cyInstance;
+
+    return () => {
+      cyInstance.destroy();
+      cyRef.current = null;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!cyRef.current) {
+      return;
+    }
+    const cyInstance = cyRef.current;
+    cyInstance.elements().remove();
+    cyInstance.add(elements);
+    cyInstance.layout(LAYOUT_OPTIONS).run();
+    cyInstance.fit(undefined, 20);
+  }, [elements]);
+
+  useEffect(() => {
+    if (!cyRef.current) {
+      return;
+    }
+    const cyInstance = cyRef.current;
+    cyInstance.nodes().removeClass("node-active");
+    cyInstance.edges().removeClass("edge-selected");
+
+    if (!selectedId) {
+      return;
+    }
+    const selectedNode = cyInstance.getElementById(selectedId);
+    if (selectedNode) {
+      selectedNode.addClass("node-active");
+      selectedNode.connectedEdges().addClass("edge-selected");
+    }
+  }, [selectedId, elements]);
+
+  const handleZoomIn = () => {
+    const cy = cyRef.current;
+    if (!cy) {
+      return;
+    }
+    const nextZoom = Math.min(cy.zoom() * 1.2, 2);
+    cy.zoom(nextZoom);
   };
 
-  const highlightEdgesForId = (id: string, className: string) => {
-    if (!wrapperRef.current) {
+  const handleZoomOut = () => {
+    const cy = cyRef.current;
+    if (!cy) {
       return;
     }
-    const edgesToHighlight = wrapperRef.current.querySelectorAll<SVGGElement>(
-      `.react-flow__edge.edge-source-${id}, .react-flow__edge.edge-target-${id}`
-    );
-    edgesToHighlight.forEach((edgeElement) => {
-      edgeElement.classList.add(className);
-    });
+    const nextZoom = Math.max(cy.zoom() * 0.8, 0.2);
+    cy.zoom(nextZoom);
+  };
+
+  const handleFit = () => {
+    const cy = cyRef.current;
+    if (!cy) {
+      return;
+    }
+    cy.fit(undefined, 20);
   };
 
   return (
@@ -158,38 +248,34 @@ export const Mindmap = ({ terms, selectedId, onSelect }: MindmapProps) => {
           </p>
         </div>
       </div>
-      <div className={classNames(styles.canvas, styles.edgeHighlight)} ref={wrapperRef}>
-        <ReactFlow
-          nodes={layoutedNodes}
-          edges={edges}
-          fitView
-          fitViewOptions={{ padding: 0.2 }}
-          minZoom={0.2}
-          nodesDraggable={false}
-          nodesConnectable={false}
-          elementsSelectable={false}
-          onNodeClick={(_, node) => onSelect(node.id)}
-          onNodeMouseEnter={(_, node) => {
-            if (hoveredIdRef.current === node.id) {
-              return;
-            }
-            if (hoveredIdRef.current) {
-              clearEdgeClass("edge-hovered");
-            }
-            hoveredIdRef.current = node.id;
-            highlightEdgesForId(node.id, "edge-hovered");
-          }}
-          onNodeMouseLeave={() => {
-            if (!hoveredIdRef.current) {
-              return;
-            }
-            clearEdgeClass("edge-hovered");
-            hoveredIdRef.current = null;
-          }}
-        >
-          <Controls />
-          <Background color="#334155" gap={16} />
-        </ReactFlow>
+      <div className={styles.canvas}>
+        <div className={styles.controls}>
+          <button
+            className={styles.controlButton}
+            type="button"
+            onClick={handleZoomIn}
+            aria-label="Приблизить"
+          >
+            +
+          </button>
+          <button
+            className={styles.controlButton}
+            type="button"
+            onClick={handleZoomOut}
+            aria-label="Отдалить"
+          >
+            −
+          </button>
+          <button
+            className={styles.controlButton}
+            type="button"
+            onClick={handleFit}
+            aria-label="Подогнать к экрану"
+          >
+            Fit
+          </button>
+        </div>
+        <div className={styles.cyCanvas} ref={containerRef} />
       </div>
     </div>
   );
