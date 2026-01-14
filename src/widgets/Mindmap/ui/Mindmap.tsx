@@ -39,6 +39,7 @@ export const Mindmap = ({ terms, selectedId, onSelect }: MindmapProps) => {
 
   const elements = useMemo(() => {
     const seen = new Set<string>();
+    const nodeIds = new Set(terms.map((term) => term.id));
     const nodes = terms.map((term) => ({
       data: {
         id: term.id,
@@ -47,6 +48,9 @@ export const Mindmap = ({ terms, selectedId, onSelect }: MindmapProps) => {
     }));
     const edges = terms.flatMap((term) =>
       term.related.flatMap((relatedId) => {
+        if (!nodeIds.has(relatedId)) {
+          return [];
+        }
         const edgeId = [term.id, relatedId].sort().join("-");
         if (seen.has(edgeId)) {
           return [];
