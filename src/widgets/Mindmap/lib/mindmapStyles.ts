@@ -1,6 +1,9 @@
-import type { Stylesheet } from "cytoscape";
-
 import { NODE_HEIGHT, NODE_WIDTH } from "./mindmapConfig";
+
+type MindmapStylesheet = {
+  selector: string;
+  style: Record<string, string | number>;
+};
 
 export const resolveCssVar = (name: string, fallback: string) => {
   if (typeof window === "undefined") {
@@ -12,7 +15,7 @@ export const resolveCssVar = (name: string, fallback: string) => {
   return value || fallback;
 };
 
-export const createMindmapStyles = (): Stylesheet[] => [
+export const createMindmapStyles = (): MindmapStylesheet[] => [
   {
     selector: "node",
     style: {
