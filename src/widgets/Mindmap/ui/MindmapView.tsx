@@ -4,7 +4,7 @@ import type { RefObject } from "react";
 import styles from "./Mindmap.module.scss";
 
 type MindmapViewProps = {
-  containerRef: RefObject<HTMLDivElement | null>;
+  containerRef: RefObject<HTMLDivElement>;
   onZoomIn: () => void;
   onZoomOut: () => void;
   onFit: () => void;

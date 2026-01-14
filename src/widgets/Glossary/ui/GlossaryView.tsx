@@ -22,7 +22,7 @@ const TermCard = dynamic(
 );
 
 type GlossaryViewProps = {
-  cardRef: RefObject<HTMLDivElement | null>;
+  cardRef: RefObject<HTMLDivElement>;
   isCardOpen: boolean;
   isLoading: boolean;
   relatedTerms: TermSummary[];
