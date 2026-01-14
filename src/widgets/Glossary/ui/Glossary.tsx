@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import styles from "./Glossary.module.scss";
 import { termSummaries } from "@/shared/data/termSummaries";
@@ -33,6 +33,12 @@ export const Glossary = () => {
   const [isCardOpen, setIsCardOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const cardRef = useRef<HTMLDivElement | null>(null);
+  const handleSelect = useCallback((id: string) => {
+    setSelectedId(id);
+  }, []);
+  const handleCloseCard = useCallback(() => {
+    setIsCardOpen(false);
+  }, []);
 
   const termSummaryMap = useMemo(() => {
     return buildTermSummaryMap(termSummaries);
@@ -97,7 +103,7 @@ export const Glossary = () => {
         <Mindmap
           terms={termSummaries}
           selectedId={selectedId}
-          onSelect={setSelectedId}
+          onSelect={handleSelect}
         />
       </section>
 
@@ -106,19 +112,19 @@ export const Glossary = () => {
           <TermList
             terms={termSummaries}
             selectedId={selectedId}
-            onSelect={setSelectedId}
+            onSelect={handleSelect}
           />
         </div>
       </section>
 
       {isCardOpen && (
         <div className={styles.cardOverlay} role="dialog" aria-modal="true">
-          <div className={styles.cardBackdrop} onClick={() => setIsCardOpen(false)} />
+          <div className={styles.cardBackdrop} onClick={handleCloseCard} />
           <div className={styles.cardWrapper} ref={cardRef}>
             <button
               className={styles.cardClose}
               type="button"
-              onClick={() => setIsCardOpen(false)}
+              onClick={handleCloseCard}
             >
               Закрыть
             </button>
@@ -127,7 +133,7 @@ export const Glossary = () => {
                 isLoading ? LOADING_TERM : selectedTerm
               }
               relatedTerms={relatedTerms}
-              onRelatedSelect={(id) => setSelectedId(id)}
+              onRelatedSelect={handleSelect}
             />
           </div>
         </div>

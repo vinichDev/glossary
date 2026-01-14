@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useMemo, useRef } from "react";
+import { memo, useEffect, useLayoutEffect, useMemo, useRef } from "react";
 import cytoscape, { Core } from "cytoscape";
 import dagre from "cytoscape-dagre";
 
@@ -26,7 +26,7 @@ type MindmapProps = {
 
 let isDagreRegistered = false;
 
-export const Mindmap = ({ terms, selectedId, onSelect }: MindmapProps) => {
+export const Mindmap = memo(({ terms, selectedId, onSelect }: MindmapProps) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const cyRef = useRef<Core | null>(null);
   const onSelectRef = useRef(onSelect);
@@ -221,4 +221,4 @@ export const Mindmap = ({ terms, selectedId, onSelect }: MindmapProps) => {
       </div>
     </div>
   );
-};
+});
