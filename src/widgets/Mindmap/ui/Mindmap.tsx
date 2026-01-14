@@ -48,10 +48,20 @@ export const Mindmap = ({ terms, selectedId, onSelect }: MindmapProps) => {
       node.connectedEdges()[action]("edge-selected");
     };
 
-    cyInstance.batch(() => {
-      cyInstance.edges().removeClass("edge-hovered");
+    const previousId = previousSelectedIdRef.current;
+    const hasSelectionChange = previousId !== nextId;
+    const hoveredEdges = cyInstance.edges(".edge-hovered");
+    const shouldClearHover = hoveredEdges.length > 0;
 
-      const previousId = previousSelectedIdRef.current;
+    if (!hasSelectionChange && !shouldClearHover) {
+      return;
+    }
+
+    cyInstance.batch(() => {
+      if (shouldClearHover) {
+        hoveredEdges.removeClass("edge-hovered");
+      }
+
       if (previousId && previousId !== nextId) {
         updateSelectionClasses(previousId, "removeClass");
       }
@@ -65,7 +75,6 @@ export const Mindmap = ({ terms, selectedId, onSelect }: MindmapProps) => {
       previousSelectedIdRef.current = nextId;
     });
 
-    cyInstance.style().update();
     cyInstance.emit("render");
   };
 
