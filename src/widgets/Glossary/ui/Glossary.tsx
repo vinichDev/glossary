@@ -6,13 +6,23 @@ import styles from "./Glossary.module.scss";
 import { termSummaries } from "@/shared/data/termSummaries";
 import { TermList } from "@/entities/term/ui/TermList";
 import { Mindmap } from "@/widgets/Mindmap/ui/Mindmap";
-import { Term, TermSummary } from "@/shared/types/term";
+import { Term } from "@/shared/types/term";
+import { fetchTermById } from "@/widgets/Glossary/lib/glossaryApi";
+import {
+  CARD_LOADING_MESSAGE,
+  GLOSSARY_REPO_URL,
+  LOADING_TERM
+} from "@/widgets/Glossary/lib/glossaryConfig";
+import {
+  buildTermSummaryMap,
+  getRelatedTerms
+} from "@/widgets/Glossary/lib/glossaryTerms";
 
 const TermCard = dynamic(
   () => import("@/shared/ui/TermCard/TermCard").then((mod) => mod.TermCard),
   {
     loading: () => (
-      <div className={styles.cardLoading}>Загрузка карточки...</div>
+      <div className={styles.cardLoading}>{CARD_LOADING_MESSAGE}</div>
     )
   }
 );
@@ -25,22 +35,11 @@ export const Glossary = () => {
   const cardRef = useRef<HTMLDivElement | null>(null);
 
   const termSummaryMap = useMemo(() => {
-    return termSummaries.reduce<Record<string, TermSummary>>(
-      (accumulator, term) => {
-        accumulator[term.id] = term;
-        return accumulator;
-      },
-      {}
-    );
+    return buildTermSummaryMap(termSummaries);
   }, []);
 
   const relatedTerms = useMemo(() => {
-    if (!selectedTerm) {
-      return [];
-    }
-    return selectedTerm.related
-      .map((relatedId) => termSummaryMap[relatedId])
-      .filter(Boolean);
+    return getRelatedTerms(selectedTerm, termSummaryMap);
   }, [selectedTerm, termSummaryMap]);
 
   useEffect(() => {
@@ -55,15 +54,9 @@ export const Glossary = () => {
     setIsLoading(true);
     setIsCardOpen(true);
 
-    fetch(`/api/terms/${selectedId}`, { signal: controller.signal })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Не удалось загрузить термин");
-        }
-        return response.json();
-      })
-      .then((payload) => {
-        setSelectedTerm(payload.data);
+    fetchTermById(selectedId, controller.signal)
+      .then((term) => {
+        setSelectedTerm(term);
       })
       .catch((error) => {
         if (error.name !== "AbortError") {
@@ -94,7 +87,7 @@ export const Glossary = () => {
           <h1 className={styles.title}>Глоссарий терминов</h1>
           <a
             className={styles.repoLink}
-            href="https://github.com/vinichDev/glossary"
+            href={GLOSSARY_REPO_URL}
             target="_blank"
             rel="noreferrer"
           >
@@ -131,16 +124,7 @@ export const Glossary = () => {
             </button>
             <TermCard
               term={
-                isLoading
-                  ? {
-                      id: "loading",
-                      title: "Загрузка...",
-                      description: "Подождите, идёт загрузка описания термина.",
-                      source: "",
-                      sourceUrl: "#",
-                      related: []
-                    }
-                  : selectedTerm
+                isLoading ? LOADING_TERM : selectedTerm
               }
               relatedTerms={relatedTerms}
               onRelatedSelect={(id) => setSelectedId(id)}
