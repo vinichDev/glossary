@@ -32,6 +32,7 @@ export const Mindmap = ({ terms, selectedId, onSelect }: MindmapProps) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const cyRef = useRef<Core | null>(null);
   const onSelectRef = useRef(onSelect);
+  const previousSelectedIdRef = useRef<string | null>(null);
 
   useEffect(() => {
     onSelectRef.current = onSelect;
@@ -203,17 +204,34 @@ export const Mindmap = ({ terms, selectedId, onSelect }: MindmapProps) => {
       return;
     }
     const cyInstance = cyRef.current;
-    cyInstance.nodes().removeClass("node-active");
-    cyInstance.edges().removeClass("edge-selected");
 
-    if (!selectedId) {
-      return;
+    const updateSelectionClasses = (
+      id: string | null,
+      action: "addClass" | "removeClass"
+    ) => {
+      if (!id) {
+        return;
+      }
+      const node = cyInstance.getElementById(id);
+      if (node.length === 0) {
+        return;
+      }
+      node[action]("node-active");
+      node.connectedEdges()[action]("edge-selected");
+    };
+
+    const previousId = previousSelectedIdRef.current;
+    if (previousId && previousId !== selectedId) {
+      updateSelectionClasses(previousId, "removeClass");
     }
-    const selectedNode = cyInstance.getElementById(selectedId);
-    if (selectedNode) {
-      selectedNode.addClass("node-active");
-      selectedNode.connectedEdges().addClass("edge-selected");
+
+    if (selectedId) {
+      updateSelectionClasses(selectedId, "addClass");
+    } else if (previousId) {
+      updateSelectionClasses(previousId, "removeClass");
     }
+
+    previousSelectedIdRef.current = selectedId;
   }, [selectedId, elements]);
 
   const handleZoomIn = () => {
