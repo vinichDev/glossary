@@ -32,6 +32,36 @@ export const Mindmap = ({ terms, selectedId, onSelect }: MindmapProps) => {
   const onSelectRef = useRef(onSelect);
   const previousSelectedIdRef = useRef<string | null>(null);
 
+  const applySelectionClasses = (cyInstance: Core, nextId: string | null) => {
+    const updateSelectionClasses = (
+      id: string | null,
+      action: "addClass" | "removeClass"
+    ) => {
+      if (!id) {
+        return;
+      }
+      const node = cyInstance.getElementById(id);
+      if (node.length === 0) {
+        return;
+      }
+      node[action]("node-active");
+      node.connectedEdges()[action]("edge-selected");
+    };
+
+    const previousId = previousSelectedIdRef.current;
+    if (previousId && previousId !== nextId) {
+      updateSelectionClasses(previousId, "removeClass");
+    }
+
+    if (nextId) {
+      updateSelectionClasses(nextId, "addClass");
+    } else if (previousId) {
+      updateSelectionClasses(previousId, "removeClass");
+    }
+
+    previousSelectedIdRef.current = nextId;
+  };
+
   useEffect(() => {
     onSelectRef.current = onSelect;
   }, [onSelect]);
@@ -61,7 +91,9 @@ export const Mindmap = ({ terms, selectedId, onSelect }: MindmapProps) => {
     });
 
     cyInstance.on("tap", "node", (event) => {
-      onSelectRef.current(event.target.id());
+      const nextId = event.target.id();
+      applySelectionClasses(cyInstance, nextId);
+      onSelectRef.current(nextId);
     });
 
     cyInstance.on("mouseover", "node", (event) => {
@@ -95,35 +127,7 @@ export const Mindmap = ({ terms, selectedId, onSelect }: MindmapProps) => {
     if (!cyRef.current) {
       return;
     }
-    const cyInstance = cyRef.current;
-
-    const updateSelectionClasses = (
-      id: string | null,
-      action: "addClass" | "removeClass"
-    ) => {
-      if (!id) {
-        return;
-      }
-      const node = cyInstance.getElementById(id);
-      if (node.length === 0) {
-        return;
-      }
-      node[action]("node-active");
-      node.connectedEdges()[action]("edge-selected");
-    };
-
-    const previousId = previousSelectedIdRef.current;
-    if (previousId && previousId !== selectedId) {
-      updateSelectionClasses(previousId, "removeClass");
-    }
-
-    if (selectedId) {
-      updateSelectionClasses(selectedId, "addClass");
-    } else if (previousId) {
-      updateSelectionClasses(previousId, "removeClass");
-    }
-
-    previousSelectedIdRef.current = selectedId;
+    applySelectionClasses(cyRef.current, selectedId);
   }, [selectedId, elements]);
 
   const handleZoomIn = () => {
