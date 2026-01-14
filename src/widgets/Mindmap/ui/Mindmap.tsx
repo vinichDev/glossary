@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef } from "react";
-import cytoscape, { Core, Stylesheet } from "cytoscape";
+import cytoscape, { Core, StylesheetCSS } from "cytoscape";
 import dagre from "cytoscape-dagre";
 
 import styles from "./Mindmap.module.scss";
@@ -91,7 +91,7 @@ export const Mindmap = ({ terms, selectedId, onSelect }: MindmapProps) => {
       return value || fallback;
     };
 
-    const cyStyles: Stylesheet[] = [
+    const cyStyles: StylesheetCSS[] = [
       {
         selector: "node",
         style: {
