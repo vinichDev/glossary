@@ -1,0 +1,79 @@
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  --color-bg-start: #0f172a;
+  --color-bg-end: #020617;
+  --color-text: #e2e8f0;
+  --color-title: #f8fafc;
+  --color-muted: rgba(226, 232, 240, 0.7);
+  --color-muted-strong: rgba(226, 232, 240, 0.85);
+  --color-muted-soft: rgba(226, 232, 240, 0.6);
+  --color-accent: #38bdf8;
+  --color-accent-strong: rgba(56, 189, 248, 0.7);
+  --color-accent-glow: rgba(56, 189, 248, 0.2);
+  --color-accent-glow-soft: rgba(56, 189, 248, 0.15);
+  --color-warning: #f97316;
+  --color-border: rgba(148, 163, 184, 0.2);
+  --color-border-strong: rgba(148, 163, 184, 0.6);
+  --color-border-medium: rgba(148, 163, 184, 0.35);
+  --color-edge: rgba(148, 163, 184, 0.55);
+  --color-surface: rgba(15, 23, 42, 0.7);
+  --color-surface-strong: rgba(15, 23, 42, 0.9);
+  --color-surface-soft: rgba(15, 23, 42, 0.6);
+  --color-surface-overlay: rgba(15, 23, 42, 0.95);
+  --color-overlay: rgba(2, 6, 23, 0.8);
+
+  --space-1: 4px;
+  --space-1-5: 6px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-7: 32px;
+  --space-8: 40px;
+  --space-9: 48px;
+  --space-10: 64px;
+  --space-11: 80px;
+
+  --font-size-xs: 12px;
+  --font-size-sm: 13px;
+  --font-size-md: 14px;
+  --font-size-base: 16px;
+  --font-size-lg: 20px;
+  --font-size-xl: 22px;
+  --font-size-2xl: 36px;
+
+  --radius-sm: 12px;
+  --radius-md: 16px;
+  --radius-lg: 20px;
+  --radius-pill: 999px;
+
+  --shadow-soft: 0 10px 30px rgba(15, 23, 42, 0.35);
+  --shadow-strong: 0 20px 60px rgba(15, 23, 42, 0.6);
+
+  --stroke-width-base: 2px;
+  --stroke-width-strong: 3px;
+}
+
+body {
+  margin: 0;
+  font-family: "Inter", "Segoe UI", sans-serif;
+  background: radial-gradient(
+    circle at top,
+    var(--color-bg-start) 0%,
+    var(--color-bg-end) 45%
+  );
+  color: var(--color-text);
+  min-height: 100vh;
+}
+
+button {
+  font-family: inherit;
+}
+
+.react-flow__renderer {
+  background: transparent;
+}

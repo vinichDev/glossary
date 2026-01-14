@@ -1,0 +1,69 @@
+.wrapper {
+  background: var(--color-surface-strong);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.title {
+  margin: 0 0 var(--space-1);
+  color: var(--color-title);
+  font-size: var(--font-size-xl);
+}
+
+.subtitle {
+  margin: 0;
+  color: var(--color-muted);
+  font-size: var(--font-size-md);
+}
+
+.canvas {
+  height: 640px;
+  width: 100%;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: var(--color-surface-soft);
+}
+
+.node {
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface-strong);
+  color: var(--color-text);
+  border: 1px solid var(--color-border-strong);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+}
+
+.nodeActive {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 2px var(--color-accent-glow);
+}
+
+.edge :global(.react-flow__edge-path) {
+  stroke: var(--color-edge);
+  stroke-width: var(--stroke-width-base);
+}
+
+.edgeHighlight :global(.edge-selected .react-flow__edge-path) {
+  stroke: var(--color-warning);
+  stroke-width: var(--stroke-width-strong);
+}
+
+.edgeHighlight :global(.edge-hovered .react-flow__edge-path) {
+  stroke: var(--color-accent);
+  stroke-width: var(--stroke-width-strong);
+}
+
+.edgeHighlight :global(.edge-hovered.edge-selected .react-flow__edge-path) {
+  stroke: var(--color-accent);
+}
