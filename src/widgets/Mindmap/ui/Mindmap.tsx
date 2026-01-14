@@ -48,18 +48,23 @@ export const Mindmap = ({ terms, selectedId, onSelect }: MindmapProps) => {
       node.connectedEdges()[action]("edge-selected");
     };
 
-    const previousId = previousSelectedIdRef.current;
-    if (previousId && previousId !== nextId) {
-      updateSelectionClasses(previousId, "removeClass");
-    }
+    cyInstance.batch(() => {
+      const previousId = previousSelectedIdRef.current;
+      if (previousId && previousId !== nextId) {
+        updateSelectionClasses(previousId, "removeClass");
+      }
 
-    if (nextId) {
-      updateSelectionClasses(nextId, "addClass");
-    } else if (previousId) {
-      updateSelectionClasses(previousId, "removeClass");
-    }
+      if (nextId) {
+        updateSelectionClasses(nextId, "addClass");
+      } else if (previousId) {
+        updateSelectionClasses(previousId, "removeClass");
+      }
 
-    previousSelectedIdRef.current = nextId;
+      previousSelectedIdRef.current = nextId;
+    });
+
+    cyInstance.style().update();
+    cyInstance.resize();
   };
 
   useEffect(() => {
