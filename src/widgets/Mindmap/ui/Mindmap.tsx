@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef } from "react";
 import cytoscape, { Core } from "cytoscape";
 import dagre from "cytoscape-dagre";
 
@@ -64,7 +64,7 @@ export const Mindmap = ({ terms, selectedId, onSelect }: MindmapProps) => {
     });
 
     cyInstance.style().update();
-    cyInstance.resize();
+    cyInstance.emit("render");
   };
 
   useEffect(() => {
@@ -128,7 +128,7 @@ export const Mindmap = ({ terms, selectedId, onSelect }: MindmapProps) => {
     cyInstance.fit(undefined, FIT_PADDING);
   }, [elements]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!cyRef.current) {
       return;
     }
