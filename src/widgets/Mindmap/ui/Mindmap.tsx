@@ -98,7 +98,15 @@ export const Mindmap = ({ terms, selectedId, onSelect }: MindmapProps) => {
     cyInstance.on("tap", "node", (event) => {
       const nextId = event.target.id();
       applySelectionClasses(cyInstance, nextId);
-      onSelectRef.current(nextId);
+
+      if (typeof window === "undefined") {
+        onSelectRef.current(nextId);
+        return;
+      }
+
+      window.requestAnimationFrame(() => {
+        onSelectRef.current(nextId);
+      });
     });
 
     cyInstance.on("mouseover", "node", (event) => {
