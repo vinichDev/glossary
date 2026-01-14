@@ -29,9 +29,10 @@ const getLayoutedElements = (nodes: Node[], edges: Edge[]) => {
   const graph = new dagre.graphlib.Graph();
   graph.setDefaultEdgeLabel(() => ({}));
   graph.setGraph({
-    rankdir: "LR",
-    nodesep: 80,
-    ranksep: 100
+    rankdir: "TB",
+    nodesep: 40,
+    ranksep: 60,
+    ranker: "tight-tree"
   });
 
   nodes.forEach((node) => {
@@ -162,6 +163,8 @@ export const Mindmap = ({ terms, selectedId, onSelect }: MindmapProps) => {
           nodes={layoutedNodes}
           edges={edges}
           fitView
+          fitViewOptions={{ padding: 0.2 }}
+          minZoom={0.2}
           nodesDraggable={false}
           nodesConnectable={false}
           elementsSelectable={false}
