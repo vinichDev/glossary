@@ -13,9 +13,20 @@ type MindmapProps = {
   terms: TermSummary[];
   selectedId: string | null;
   onSelect: (id: string) => void;
+  onNodeHover?: () => void;
+  isControlsDisabled?: boolean;
+  isInteractionLocked?: boolean;
 };
 
-export const Mindmap = memo(({ terms, selectedId, onSelect }: MindmapProps) => {
+export const Mindmap = memo(
+  ({
+    terms,
+    selectedId,
+    onSelect,
+    onNodeHover,
+    isControlsDisabled = false,
+    isInteractionLocked = false
+  }: MindmapProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const selectionSyncRef = useRef<(cy: Core, id: string | null) => void>(() => {
     return;
@@ -31,7 +42,9 @@ export const Mindmap = memo(({ terms, selectedId, onSelect }: MindmapProps) => {
   const { cyRef } = useMindmapInstance({
     containerRef,
     onSelect,
-    onSelectionSync: handleSelectionSync
+    onSelectionSync: handleSelectionSync,
+    onNodeHover,
+    isInteractionLocked
   });
 
   const { elements } = useMindmapElements({ terms, cyRef });
@@ -54,6 +67,8 @@ export const Mindmap = memo(({ terms, selectedId, onSelect }: MindmapProps) => {
       onZoomIn={handleZoomIn}
       onZoomOut={handleZoomOut}
       onFit={handleFit}
+      isControlsDisabled={isControlsDisabled}
     />
   );
-});
+  }
+);

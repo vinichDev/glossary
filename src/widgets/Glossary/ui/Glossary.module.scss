@@ -34,6 +34,11 @@
   text-decoration: underline;
 }
 
+.repoLinkDisabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
 .mindmapSection {
   position: relative;
 }
@@ -42,12 +47,17 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
+  position: relative;
 }
 
 .listGrid {
   display: flex;
   flex-direction: column;
   gap: var(--space-6);
+}
+
+.listTutorialWrapper {
+  position: relative;
 }
 
 .cardOverlay {
@@ -100,6 +110,94 @@
   padding: var(--space-6) var(--space-4);
 }
 
+.tutorialBubble {
+  position: absolute;
+  max-width: 320px;
+  padding: var(--space-3) var(--space-4);
+  background: rgba(71, 85, 105, 0.92);
+  border: 1px solid rgba(56, 189, 248, 0.6);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-soft);
+  color: #f8fafc;
+  font-size: var(--font-size-sm);
+  backdrop-filter: blur(6px);
+  z-index: 2;
+  pointer-events: none;
+}
+
+.tutorialBubble::after {
+  content: "";
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background: rgba(71, 85, 105, 0.92);
+  border-left: 1px solid rgba(56, 189, 248, 0.6);
+  border-top: 1px solid rgba(56, 189, 248, 0.6);
+  transform: rotate(45deg);
+}
+
+.tutorialBubbleTitle {
+  margin: 0 0 var(--space-1);
+  font-weight: 600;
+  color: #f8fafc;
+}
+
+.tutorialBubbleStep {
+  display: flex;
+  gap: var(--space-2);
+  align-items: baseline;
+}
+
+.tutorialBubbleNumber {
+  font-weight: 600;
+  color: #bae6fd;
+}
+
+.tutorialBubbleMindmap {
+  top: var(--space-4);
+  left: var(--space-4);
+}
+
+.tutorialBubbleMindmap::after {
+  bottom: -6px;
+  left: var(--space-6);
+  transform: rotate(225deg);
+}
+
+.tutorialBubbleList {
+  position: fixed;
+  right: var(--space-4);
+  bottom: var(--space-4);
+}
+
+.tutorialBubbleList::after {
+  top: -6px;
+  left: var(--space-6);
+  transform: rotate(45deg);
+}
+
+.tutorialBubbleRelated {
+  position: relative;
+  margin-top: var(--space-3);
+  max-width: 100%;
+}
+
+.tutorialBubbleRelated::after {
+  top: -6px;
+  left: var(--space-6);
+  transform: rotate(45deg);
+}
+
+.tutorialBubbleCard {
+  position: relative;
+  margin: 0 0 var(--space-4);
+}
+
+.tutorialBubbleCard::after {
+  top: -6px;
+  left: var(--space-6);
+}
+
 @media (max-width: 1024px) {
   .page {
     padding: var(--space-7) var(--space-6) var(--space-10);
@@ -112,4 +210,5 @@
   .cardWrapper {
     width: min(520px, 92vw);
   }
+
 }
