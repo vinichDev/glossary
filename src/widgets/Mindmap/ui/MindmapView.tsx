@@ -8,13 +8,15 @@ type MindmapViewProps = {
   onZoomIn: () => void;
   onZoomOut: () => void;
   onFit: () => void;
+  isControlsDisabled?: boolean;
 };
 
 export const MindmapView = ({
   containerRef,
   onZoomIn,
   onZoomOut,
-  onFit
+  onFit,
+  isControlsDisabled = false
 }: MindmapViewProps) => {
   return (
     <div className={styles.wrapper}>
@@ -31,6 +33,7 @@ export const MindmapView = ({
             type="button"
             onClick={onZoomIn}
             aria-label="Приблизить"
+            disabled={isControlsDisabled}
           >
             +
           </button>
@@ -39,6 +42,7 @@ export const MindmapView = ({
             type="button"
             onClick={onZoomOut}
             aria-label="Отдалить"
+            disabled={isControlsDisabled}
           >
             −
           </button>
@@ -47,6 +51,7 @@ export const MindmapView = ({
             type="button"
             onClick={onFit}
             aria-label="Подогнать к экрану"
+            disabled={isControlsDisabled}
           >
             Fit
           </button>

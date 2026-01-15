@@ -18,19 +18,28 @@ type UseMindmapInstanceParams = {
   containerRef: RefObject<HTMLDivElement>;
   onSelect: (id: string) => void;
   onSelectionSync: (cyInstance: Core, nextId: string | null) => void;
+  onNodeHover?: () => void;
+  isInteractionLocked?: boolean;
 };
 
 export const useMindmapInstance = ({
   containerRef,
   onSelect,
-  onSelectionSync
+  onSelectionSync,
+  onNodeHover,
+  isInteractionLocked = false
 }: UseMindmapInstanceParams) => {
   const cyRef = useRef<Core | null>(null);
   const onSelectRef = useRef(onSelect);
+  const onNodeHoverRef = useRef(onNodeHover);
 
   useEffect(() => {
     onSelectRef.current = onSelect;
   }, [onSelect]);
+
+  useEffect(() => {
+    onNodeHoverRef.current = onNodeHover;
+  }, [onNodeHover]);
 
   useEffect(() => {
     if (!containerRef.current) {
@@ -70,6 +79,7 @@ export const useMindmapInstance = ({
 
     cyInstance.on("mouseover", "node", (event) => {
       event.target.connectedEdges().addClass("edge-hovered");
+      onNodeHoverRef.current?.();
     });
 
     cyInstance.on("mouseout", "node", (event) => {
@@ -83,6 +93,14 @@ export const useMindmapInstance = ({
       cyRef.current = null;
     };
   }, [containerRef, onSelectionSync]);
+
+  useEffect(() => {
+    if (!cyRef.current) {
+      return;
+    }
+    cyRef.current.userZoomingEnabled(!isInteractionLocked);
+    cyRef.current.userPanningEnabled(!isInteractionLocked);
+  }, [isInteractionLocked]);
 
   return { cyRef };
 };

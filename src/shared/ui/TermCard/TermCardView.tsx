@@ -1,6 +1,6 @@
 "use client";
 
-import type { MouseEvent } from "react";
+import type { MouseEvent, ReactNode } from "react";
 import classNames from "classnames";
 import styles from "./TermCard.module.scss";
 import type { Term, TermSummary } from "@/shared/types/term";
@@ -9,12 +9,18 @@ type TermCardViewProps = {
   term: Term | null;
   relatedTerms: TermSummary[];
   onRelatedSelect: (event: MouseEvent<HTMLButtonElement>) => void;
+  isRelatedDisabled?: boolean;
+  isSourceDisabled?: boolean;
+  tutorialRelatedBubble?: ReactNode;
 };
 
 export const TermCardView = ({
   term,
   relatedTerms,
-  onRelatedSelect
+  onRelatedSelect,
+  isRelatedDisabled = false,
+  isSourceDisabled = false,
+  tutorialRelatedBubble
 }: TermCardViewProps) => {
   if (!term) {
     return (
@@ -31,29 +37,46 @@ export const TermCardView = ({
       </div>
       <p className={styles.cardDescription}>{term.description}</p>
       {relatedTerms.length > 0 && (
-        <div className={styles.relatedBlock}>
+        <div
+          className={classNames(styles.relatedBlock, {
+            [styles.relatedBlockWithBubble]: tutorialRelatedBubble
+          })}
+        >
           <h3 className={styles.relatedTitle}>Связанные термины</h3>
           <div className={styles.relatedList}>
             {relatedTerms.map((related) => (
               <button
-                className={styles.relatedButton}
+                className={classNames(styles.relatedButton, {
+                  [styles.relatedButtonDisabled]: isRelatedDisabled
+                })}
                 type="button"
                 key={related.id}
                 data-term-id={related.id}
                 onClick={onRelatedSelect}
+                disabled={isRelatedDisabled}
               >
                 {related.title}
               </button>
             ))}
           </div>
+          {tutorialRelatedBubble}
         </div>
       )}
       {term.sourceUrl && term.source && (
         <a
-          className={styles.cardSource}
+          className={classNames(styles.cardSource, {
+            [styles.cardSourceDisabled]: isSourceDisabled
+          })}
           href={term.sourceUrl}
           target="_blank"
           rel="noreferrer"
+          aria-disabled={isSourceDisabled}
+          tabIndex={isSourceDisabled ? -1 : 0}
+          onClick={(event) => {
+            if (isSourceDisabled) {
+              event.preventDefault();
+            }
+          }}
         >
           Источник: {term.source}
         </a>

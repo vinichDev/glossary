@@ -3,6 +3,7 @@
 import { memo } from "react";
 import { GlossaryView } from "@/widgets/Glossary/ui/GlossaryView";
 import { useGlossary } from "@/widgets/Glossary/model/useGlossary";
+import { useGlossaryTutorial } from "@/features/glossaryTutorial/model/useGlossaryTutorial";
 
 export const Glossary = memo(() => {
   const {
@@ -17,6 +18,19 @@ export const Glossary = memo(() => {
     termSummaries
   } = useGlossary();
 
+  const {
+    bubbleTexts,
+    handleCloseCard: handleTutorialClose,
+    handleListSelect,
+    handleMindmapHover,
+    handleMindmapSelect,
+    handleRelatedSelect,
+    interactionState
+  } = useGlossaryTutorial({
+    onSelect: handleSelect,
+    onCloseCard: handleCloseCard
+  });
+
   return (
     <GlossaryView
       cardRef={cardRef}
@@ -26,8 +40,13 @@ export const Glossary = memo(() => {
       selectedId={selectedId}
       selectedTerm={selectedTerm}
       termSummaries={termSummaries}
-      onCloseCard={handleCloseCard}
-      onSelect={handleSelect}
+      onCloseCard={handleTutorialClose}
+      onListSelect={handleListSelect}
+      onMindmapHover={handleMindmapHover}
+      onMindmapSelect={handleMindmapSelect}
+      onRelatedSelect={handleRelatedSelect}
+      interactionState={interactionState}
+      tutorialBubbleTexts={bubbleTexts}
     />
   );
 });

@@ -9,10 +9,11 @@ type TermListProps = {
   terms: TermSummary[];
   selectedId: string | null;
   onSelect: (id: string) => void;
+  isInteractionDisabled?: boolean;
 };
 
 export const TermList = memo(
-  ({ terms, selectedId, onSelect }: TermListProps) => {
+  ({ terms, selectedId, onSelect, isInteractionDisabled = false }: TermListProps) => {
     const { handleSelect } = useTermList({ onSelect });
 
     return (
@@ -20,6 +21,7 @@ export const TermList = memo(
         terms={terms}
         selectedId={selectedId}
         onItemSelect={handleSelect}
+        isInteractionDisabled={isInteractionDisabled}
       />
     );
   }

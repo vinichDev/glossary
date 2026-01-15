@@ -45,6 +45,10 @@
   gap: var(--space-3);
 }
 
+.relatedBlockWithBubble {
+  position: relative;
+}
+
 .relatedTitle {
   margin: 0;
   font-size: var(--font-size-base);
@@ -73,6 +77,18 @@
   color: var(--color-accent);
 }
 
+.relatedButtonDisabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  border-color: var(--color-border-medium);
+  color: var(--color-text);
+}
+
+.relatedButtonDisabled:hover {
+  border-color: var(--color-border-medium);
+  color: var(--color-text);
+}
+
 .cardSource {
   color: var(--color-accent);
   font-weight: 600;
@@ -81,4 +97,10 @@
 
 .cardSource:hover {
   text-decoration: underline;
+}
+
+.cardSourceDisabled {
+  opacity: 0.5;
+  pointer-events: none;
+  text-decoration: none;
 }

@@ -47,6 +47,16 @@
   transform: translateY(-2px);
 }
 
+.listItemDisabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.listItemDisabled:hover {
+  border-color: var(--color-border);
+  transform: none;
+}
+
 .listItemActive {
   border-color: var(--color-accent);
   box-shadow: 0 0 0 2px var(--color-accent-glow-soft);

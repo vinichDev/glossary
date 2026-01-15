@@ -12,7 +12,6 @@ export const useGlossary = () => {
   const [isCardOpen, setIsCardOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
-
   const handleSelect = useCallback((id: string) => {
     setSelectedId(id);
   }, []);
