@@ -3,7 +3,11 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   GLOSSARY_TUTORIAL_ENABLED,
-  GLOSSARY_TUTORIAL_STORAGE_KEY
+  GLOSSARY_TUTORIAL_METRIKA_COUNTER_ID,
+  GLOSSARY_TUTORIAL_METRIKA_GOALS,
+  GLOSSARY_TUTORIAL_STORAGE_KEY,
+  GLOSSARY_TUTORIAL_VARIANTS,
+  GLOSSARY_TUTORIAL_VARIANT_STORAGE_KEY
 } from "@/features/glossaryTutorial/lib/glossaryTutorialConfig";
 import type {
   GlossaryTutorialBubble,
@@ -24,6 +28,54 @@ export const useGlossaryTutorial = ({
   const [isTouchDevice, setIsTouchDevice] = useState(false);
   const isTutorialActive = tutorialStep !== null;
 
+  const getTutorialVariant = useCallback(() => {
+    if (typeof window === "undefined") {
+      return null;
+    }
+    const storedVariant = window.localStorage.getItem(
+      GLOSSARY_TUTORIAL_VARIANT_STORAGE_KEY
+    );
+    const knownVariants = Object.values(GLOSSARY_TUTORIAL_VARIANTS);
+    if (
+      storedVariant &&
+      knownVariants.includes(storedVariant as (typeof knownVariants)[number])
+    ) {
+      return storedVariant as (typeof knownVariants)[number];
+    }
+    const variant =
+      Math.random() < 0.5
+        ? GLOSSARY_TUTORIAL_VARIANTS.withTutorial
+        : GLOSSARY_TUTORIAL_VARIANTS.withoutTutorial;
+    window.localStorage.setItem(GLOSSARY_TUTORIAL_VARIANT_STORAGE_KEY, variant);
+    return variant;
+  }, []);
+
+  const trackTermCardOpen = useCallback(
+    (termId: string) => {
+      if (typeof window === "undefined") {
+        return;
+      }
+      if (!GLOSSARY_TUTORIAL_METRIKA_COUNTER_ID) {
+        return;
+      }
+      if (typeof window.ym !== "function") {
+        return;
+      }
+      const variant = getTutorialVariant();
+      if (!variant) {
+        return;
+      }
+      const goal =
+        variant === GLOSSARY_TUTORIAL_VARIANTS.withTutorial
+          ? GLOSSARY_TUTORIAL_METRIKA_GOALS.withTutorial
+          : GLOSSARY_TUTORIAL_METRIKA_GOALS.withoutTutorial;
+      window.ym(GLOSSARY_TUTORIAL_METRIKA_COUNTER_ID, "reachGoal", goal, {
+        termId
+      });
+    },
+    [getTutorialVariant]
+  );
+
   const completeTutorial = useCallback(() => {
     setTutorialStep(null);
     if (typeof window !== "undefined") {
@@ -35,51 +87,60 @@ export const useGlossaryTutorial = ({
     (id: string) => {
       if (isTutorialActive) {
         if (tutorialStep === 1) {
+          trackTermCardOpen(id);
           onSelect(id);
           setTutorialStep(2);
         } else if (tutorialStep === 5) {
+          trackTermCardOpen(id);
           onSelect(id);
           completeTutorial();
         }
         return;
       }
+      trackTermCardOpen(id);
       onSelect(id);
     },
-    [completeTutorial, isTutorialActive, onSelect, tutorialStep]
+    [completeTutorial, isTutorialActive, onSelect, trackTermCardOpen, tutorialStep]
   );
 
   const handleListSelect = useCallback(
     (id: string) => {
       if (isTutorialActive) {
         if (tutorialStep === 4) {
+          trackTermCardOpen(id);
           onSelect(id);
           setTutorialStep(5);
         } else if (tutorialStep === 5) {
+          trackTermCardOpen(id);
           onSelect(id);
           completeTutorial();
         }
         return;
       }
+      trackTermCardOpen(id);
       onSelect(id);
     },
-    [completeTutorial, isTutorialActive, onSelect, tutorialStep]
+    [completeTutorial, isTutorialActive, onSelect, trackTermCardOpen, tutorialStep]
   );
 
   const handleRelatedSelect = useCallback(
     (id: string) => {
       if (isTutorialActive) {
         if (tutorialStep === 2) {
+          trackTermCardOpen(id);
           onSelect(id);
           setTutorialStep(3);
         } else if (tutorialStep === 5) {
+          trackTermCardOpen(id);
           onSelect(id);
           completeTutorial();
         }
         return;
       }
+      trackTermCardOpen(id);
       onSelect(id);
     },
-    [completeTutorial, isTutorialActive, onSelect, tutorialStep]
+    [completeTutorial, isTutorialActive, onSelect, trackTermCardOpen, tutorialStep]
   );
 
   const handleMindmapHover = useCallback(() => {
@@ -120,12 +181,17 @@ export const useGlossaryTutorial = ({
       window.matchMedia?.("(hover: none), (pointer: coarse)")?.matches ??
       false;
     setIsTouchDevice(isTouch);
+    const variant = getTutorialVariant();
+    if (variant === GLOSSARY_TUTORIAL_VARIANTS.withoutTutorial) {
+      setTutorialStep(null);
+      return;
+    }
     const isCompleted =
       window.localStorage.getItem(GLOSSARY_TUTORIAL_STORAGE_KEY) === "true";
     if (!isCompleted) {
       setTutorialStep(isTouch ? 1 : 0);
     }
-  }, []);
+  }, [getTutorialVariant]);
 
   const getStepNumber = useCallback(
     (step: number) => {
