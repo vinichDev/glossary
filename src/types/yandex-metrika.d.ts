@@ -3,10 +3,10 @@ export {};
 declare global {
   interface Window {
     ym?: (
-      counterId: number,
-      method: "reachGoal",
-      goal: string,
-      params?: Record<string, unknown>
+        counterId: number,
+        method: string,
+        goal: string | object,
+        params?: Record<string, unknown>
     ) => void;
   }
 }
