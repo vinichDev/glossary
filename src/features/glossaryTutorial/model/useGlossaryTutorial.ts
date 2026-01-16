@@ -50,6 +50,24 @@ export const useGlossaryTutorial = ({
     return variant;
   }, []);
 
+  const trackTutorialVariant = useCallback((variant: string | null) => {
+    if (!variant) {
+      return;
+    }
+    if (typeof window === "undefined") {
+      return;
+    }
+    if (!GLOSSARY_TUTORIAL_METRIKA_COUNTER_ID) {
+      return;
+    }
+    if (typeof window.ym !== "function") {
+      return;
+    }
+    window.ym(GLOSSARY_TUTORIAL_METRIKA_COUNTER_ID, "params", {
+        glossaryTutorialVariant: variant
+    });
+  }, []);
+
   const trackTermCardOpen = useCallback(
     (termId: string) => {
       if (typeof window === "undefined") {
@@ -182,6 +200,7 @@ export const useGlossaryTutorial = ({
       false;
     setIsTouchDevice(isTouch);
     const variant = getTutorialVariant();
+    trackTutorialVariant(variant);
     if (variant === GLOSSARY_TUTORIAL_VARIANTS.withoutTutorial) {
       setTutorialStep(null);
       return;
@@ -191,7 +210,7 @@ export const useGlossaryTutorial = ({
     if (!isCompleted) {
       setTutorialStep(isTouch ? 1 : 0);
     }
-  }, [getTutorialVariant]);
+  }, [getTutorialVariant, trackTutorialVariant]);
 
   const getStepNumber = useCallback(
     (step: number) => {
