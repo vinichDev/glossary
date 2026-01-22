@@ -50,8 +50,8 @@ export const TermCardView = ({
                   [styles.relatedButtonDisabled]: isRelatedDisabled
                 })}
                 type="button"
-                key={related.id}
-                data-term-id={related.id}
+                key={related.keyword}
+                data-term-id={related.keyword}
                 onClick={onRelatedSelect}
                 disabled={isRelatedDisabled}
               >

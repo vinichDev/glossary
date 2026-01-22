@@ -2,10 +2,10 @@ import { TermSummary } from "@/shared/types/term";
 
 export const buildMindmapElements = (terms: TermSummary[]) => {
   const seen = new Set<string>();
-  const nodeIds = new Set(terms.map((term) => term.id));
+  const nodeIds = new Set(terms.map((term) => term.keyword));
   const nodes = terms.map((term) => ({
     data: {
-      id: term.id,
+      id: term.keyword,
       label: term.title
     }
   }));
@@ -14,7 +14,7 @@ export const buildMindmapElements = (terms: TermSummary[]) => {
       if (!nodeIds.has(relatedId)) {
         return [];
       }
-      const edgeId = [term.id, relatedId].sort().join("-");
+      const edgeId = [term.keyword, relatedId].sort().join("-");
       if (seen.has(edgeId)) {
         return [];
       }
@@ -23,7 +23,7 @@ export const buildMindmapElements = (terms: TermSummary[]) => {
         {
           data: {
             id: edgeId,
-            source: term.id,
+            source: term.keyword,
             target: relatedId
           }
         }

@@ -7,3 +7,11 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
+
+# Glossary API artifacts
+/backend/data/*.db
+/backend/static-docs/
+
+# Glossary API artifacts
+/backend/data/*.db
+/backend/static-docs/

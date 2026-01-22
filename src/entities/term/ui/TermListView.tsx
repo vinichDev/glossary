@@ -26,14 +26,14 @@ export const TermListView = ({
       </div>
       <ul className={styles.list}>
         {terms.map((term) => (
-          <li key={term.id}>
+          <li key={term.keyword}>
             <button
               className={classNames(styles.listItem, {
-                [styles.listItemActive]: term.id === selectedId,
+                [styles.listItemActive]: term.keyword === selectedId,
                 [styles.listItemDisabled]: isInteractionDisabled
               })}
               onClick={onItemSelect}
-              data-term-id={term.id}
+              data-term-id={term.keyword}
               type="button"
               disabled={isInteractionDisabled}
             >

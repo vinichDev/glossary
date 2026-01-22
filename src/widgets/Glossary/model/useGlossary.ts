@@ -1,33 +1,51 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { termSummaries } from "@/shared/data/termSummaries";
-import type { Term } from "@/shared/types/term";
-import { fetchTermById } from "@/widgets/Glossary/lib/glossaryApi";
+import type { Term, TermSummary } from "@/shared/types/term";
+import {
+  fetchTermByKeyword,
+  fetchTerms
+} from "@/entities/term/api/termsApi";
 import { buildTermSummaryMap, getRelatedTerms } from "@/widgets/Glossary/lib/glossaryTerms";
 
 export const useGlossary = () => {
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [selectedKeyword, setSelectedKeyword] = useState<string | null>(null);
   const [selectedTerm, setSelectedTerm] = useState<Term | null>(null);
   const [isCardOpen, setIsCardOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [termSummaries, setTermSummaries] = useState<TermSummary[]>([]);
   const cardRef = useRef<HTMLDivElement>(null);
-  const handleSelect = useCallback((id: string) => {
-    setSelectedId(id);
+  const handleSelect = useCallback((keyword: string) => {
+    setSelectedKeyword(keyword);
   }, []);
 
   const handleCloseCard = useCallback(() => {
     setIsCardOpen(false);
   }, []);
 
-  const termSummaryMap = useMemo(() => buildTermSummaryMap(termSummaries), []);
+  const termSummaryMap = useMemo(
+    () => buildTermSummaryMap(termSummaries),
+    [termSummaries]
+  );
 
   const relatedTerms = useMemo(() => {
     return getRelatedTerms(selectedTerm, termSummaryMap);
   }, [selectedTerm, termSummaryMap]);
 
+  const refreshTerms = useCallback(() => {
+    const controller = new AbortController();
+
+    fetchTerms(controller.signal)
+      .then((terms) => setTermSummaries(terms))
+      .catch(() => setTermSummaries([]));
+  }, []);
+
   useEffect(() => {
-    if (!selectedId) {
+    refreshTerms();
+  }, [refreshTerms]);
+
+  useEffect(() => {
+    if (!selectedKeyword) {
       setSelectedTerm(null);
       setIsCardOpen(false);
       return;
@@ -38,7 +56,7 @@ export const useGlossary = () => {
     setIsLoading(true);
     setIsCardOpen(true);
 
-    fetchTermById(selectedId, controller.signal)
+    fetchTermByKeyword(selectedKeyword, controller.signal)
       .then((term) => {
         setSelectedTerm(term);
       })
@@ -52,7 +70,7 @@ export const useGlossary = () => {
       });
 
     return () => controller.abort();
-  }, [selectedId]);
+  }, [selectedKeyword]);
 
   useEffect(() => {
     if (!cardRef.current || !isCardOpen) {
@@ -71,8 +89,10 @@ export const useGlossary = () => {
     isCardOpen,
     isLoading,
     relatedTerms,
-    selectedId,
+    refreshTerms,
+    selectedId: selectedKeyword,
     selectedTerm,
-    termSummaries
+    termSummaries,
+    setSelectedKeyword
   };
 };

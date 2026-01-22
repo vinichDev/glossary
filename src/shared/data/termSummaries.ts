@@ -2,197 +2,197 @@ import { TermSummary } from "@/shared/types/term";
 
 export const termSummaries: TermSummary[] = [
   {
-    id: "rendering",
+    keyword: "rendering",
     title: "Рендеринг",
     related: ["csr", "ssr", "pre-rendering", "hydration", "streaming"]
   },
   {
-    id: "csr",
+    keyword: "csr",
     title: "CSR (Client-Side Rendering)",
     related: ["ssr", "hydration", "rendering"]
   },
   {
-    id: "ssr",
+    keyword: "ssr",
     title: "SSR (Server-Side Rendering)",
     related: ["csr", "hydration", "pre-rendering", "rendering"]
   },
   {
-    id: "pre-rendering",
+    keyword: "pre-rendering",
     title: "Предрендеринг (Pre-rendering)",
     related: ["ssg", "ssr", "nextjs"]
   },
   {
-    id: "ssg",
+    keyword: "ssg",
     title: "SSG (Static Site Generation)",
     related: ["pre-rendering", "isr", "cdn"]
   },
   {
-    id: "isr",
+    keyword: "isr",
     title: "ISR (Incremental Static Regeneration)",
     related: ["ssg", "revalidation", "caching"]
   },
   {
-    id: "hydration",
+    keyword: "hydration",
     title: "Гидратация (Hydration)",
     related: ["ssr", "csr", "react", "tti"]
   },
   {
-    id: "streaming",
+    keyword: "streaming",
     title: "Потоковый рендеринг (Streaming)",
     related: ["suspense", "app-router", "fcp"]
   },
   {
-    id: "suspense",
+    keyword: "suspense",
     title: "React Suspense",
     related: ["streaming"]
   },
   {
-    id: "rsc",
+    keyword: "rsc",
     title: "RSC (React Server Components)",
     related: ["server-components", "client-components", "app-router"]
   },
   {
-    id: "server-components",
+    keyword: "server-components",
     title: "Server Components",
     related: ["rsc", "client-components"]
   },
   {
-    id: "client-components",
+    keyword: "client-components",
     title: "Client Components",
     related: ["use-client", "hydration", "rsc"]
   },
   {
-    id: "use-client",
+    keyword: "use-client",
     title: "Директива 'use client'",
     related: ["client-components", "app-router"]
   },
   {
-    id: "nextjs",
+    keyword: "nextjs",
     title: "Next.js",
     related: ["app-router", "pages-router", "ssr", "ssg", "isr"]
   },
   {
-    id: "pages-router",
+    keyword: "pages-router",
     title: "Pages Router",
     related: ["app-router", "getstaticprops", "getserversideprops", "api-routes"]
   },
   {
-    id: "app-router",
+    keyword: "app-router",
     title: "App Router",
     related: ["rsc", "route-handlers", "server-actions", "parallel-routes"]
   },
   {
-    id: "parallel-routes",
+    keyword: "parallel-routes",
     title: "Parallel Routes",
     related: ["app-router", "intercepting-routes"]
   },
   {
-    id: "intercepting-routes",
+    keyword: "intercepting-routes",
     title: "Intercepting Routes",
     related: ["app-router", "parallel-routes"]
   },
   {
-    id: "getstaticprops",
+    keyword: "getstaticprops",
     title: "getStaticProps",
     related: ["pages-router", "ssg"]
   },
   {
-    id: "getserversideprops",
+    keyword: "getserversideprops",
     title: "getServerSideProps",
     related: ["pages-router", "ssr"]
   },
   {
-    id: "api-routes",
+    keyword: "api-routes",
     title: "API Routes",
     related: ["pages-router", "route-handlers"]
   },
   {
-    id: "route-handlers",
+    keyword: "route-handlers",
     title: "Route Handlers",
     related: ["app-router"]
   },
   {
-    id: "server-actions",
+    keyword: "server-actions",
     title: "Server Actions",
     related: ["use-server", "revalidation", "caching"]
   },
   {
-    id: "use-server",
+    keyword: "use-server",
     title: "Директива 'use server'",
     related: ["server-actions", "rsc"]
   },
   {
-    id: "caching",
+    keyword: "caching",
     title: "Кэширование (Next.js)",
     related: ["memoization", "revalidation", "isr"]
   },
   {
-    id: "revalidation",
+    keyword: "revalidation",
     title: "Ревалидация (Revalidation)",
     related: ["caching", "isr", "server-actions"]
   },
   {
-    id: "metadata-api",
+    keyword: "metadata-api",
     title: "Metadata API (generateMetadata)",
     related: ["seo", "app-router"]
   },
   {
-    id: "ttfb",
+    keyword: "ttfb",
     title: "TTFB (Time To First Byte)",
     related: ["fcp", "performance"]
   },
   {
-    id: "fcp",
+    keyword: "fcp",
     title: "FCP (First Contentful Paint)",
     related: ["ttfb", "tti", "performance"]
   },
   {
-    id: "tti",
+    keyword: "tti",
     title: "TTI (Time To Interactive)",
     related: ["hydration", "performance"]
   },
   {
-    id: "lighthouse",
+    keyword: "lighthouse",
     title: "Lighthouse",
     related: ["performance", "seo", "ttfb", "fcp", "tti"]
   },
   {
-    id: "cdn",
+    keyword: "cdn",
     title: "CDN (Content Delivery Network)",
     related: ["ssg", "edge-network"]
   },
   {
-    id: "next-image",
+    keyword: "next-image",
     title: "next/image (Image Component)",
     related: ["nextjs", "performance"]
   },
   {
-    id: "vercel-edge-network",
+    keyword: "vercel-edge-network",
     title: "Vercel Edge Network",
     related: ["edge-runtime", "cdn", "vercel-functions"]
   },
   {
-    id: "edge-runtime",
+    keyword: "edge-runtime",
     title: "Edge Runtime",
     related: ["vercel-edge-network", "vercel-functions"]
   },
   {
-    id: "vercel-functions",
+    keyword: "vercel-functions",
     title: "Vercel Functions (Serverless/Functions)",
     related: ["serverless-functions", "edge-runtime"]
   },
   {
-    id: "virtualization",
+    keyword: "virtualization",
     title: "Виртуализация списков (Windowing)",
     related: ["performance", "rendering"]
   },
   {
-    id: "remix",
+    keyword: "remix",
     title: "Remix",
     related: ["ssr", "rendering"]
   },
   {
-    id: "performance",
+    keyword: "performance",
     title: "Веб-производительность (user-centric metrics)",
     related: ["ttfb", "fcp", "tti", "lighthouse"]
   }

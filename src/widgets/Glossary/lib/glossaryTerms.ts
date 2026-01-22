@@ -5,7 +5,7 @@ export const buildTermSummaryMap = (
 ): Record<string, TermSummary> => {
   return summaries.reduce<Record<string, TermSummary>>(
     (accumulator, term) => {
-      accumulator[term.id] = term;
+      accumulator[term.keyword] = term;
       return accumulator;
     },
     {}
