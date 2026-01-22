@@ -13,10 +13,3 @@ npm run dev
 
 - `GET /api/terms` — список терминов
 - `GET /api/terms/{id}` — термин по идентификатору
-
-## Docker
-
-```bash
-docker build -t glossary .
-docker run -p 3000:3000 glossary
-```
