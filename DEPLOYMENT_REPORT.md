@@ -10,7 +10,10 @@
    - Frontend: `http://localhost:3000`
    - Backend API: `http://localhost:8000`
 
-## Публичный сервер
+## Публичный доступ
+
+front: https://glossary-349e.onrender.com/
+back: https://glossary-fastapi-back.onrender.com
 
 ## Процесс работы сервиса  
 
@@ -26,9 +29,7 @@ cd backend
 python scripts/generate_static_docs.py
 ```
 
-### Доступ к документации
+### Доступ к документации на бэке
 Swagger: /docs
 Opendoc: /static-docs
 
-
-## Статус публичного деплоя
