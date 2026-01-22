@@ -1,4 +1,4 @@
-export type Term = {
+export type TermPayload = {
   keyword: string;
   title: string;
   description: string;
@@ -6,5 +6,3 @@ export type Term = {
   sourceUrl: string;
   related: string[];
 };
-
-export type TermSummary = Pick<Term, "keyword" | "title" | "related">;

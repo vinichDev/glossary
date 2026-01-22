@@ -3,6 +3,7 @@
 import dynamic from "next/dynamic";
 import styles from "./Glossary.module.scss";
 import { TermList } from "@/entities/term/ui/TermList";
+import { TermManagementForm } from "@/features/termManagement/ui/TermManagementForm";
 import { Mindmap } from "@/widgets/Mindmap/ui/Mindmap";
 import { resolveInteractionState } from "@/features/glossaryTutorial/lib/resolveInteractionState";
 import type {
@@ -11,6 +12,7 @@ import type {
 } from "@/features/glossaryTutorial/model/types";
 import type { RefObject } from "react";
 import type { Term, TermSummary } from "@/shared/types/term";
+import type { TermPayload } from "@/entities/term/model/types";
 import {
   CARD_LOADING_MESSAGE,
   GLOSSARY_REPO_URL,
@@ -30,10 +32,19 @@ type GlossaryViewProps = {
   cardRef: RefObject<HTMLDivElement>;
   isCardOpen: boolean;
   isLoading: boolean;
+  isSaving: boolean;
   relatedTerms: TermSummary[];
+  relatedInput: string;
   selectedId: string | null;
   selectedTerm: Term | null;
   termSummaries: TermSummary[];
+  termForm: TermPayload;
+  actionMessage: string | null;
+  onFormChange: (next: TermPayload | ((prev: TermPayload) => TermPayload)) => void;
+  onRelatedInputChange: (next: string) => void;
+  onCreateTerm: () => void;
+  onUpdateTerm: () => void;
+  onDeleteTerm: () => void;
   onCloseCard: () => void;
   onListSelect: (id: string) => void;
   onMindmapHover: () => void;
@@ -52,10 +63,19 @@ export const GlossaryView = ({
   cardRef,
   isCardOpen,
   isLoading,
+  isSaving,
   relatedTerms,
+  relatedInput,
   selectedId,
   selectedTerm,
   termSummaries,
+  termForm,
+  actionMessage,
+  onFormChange,
+  onRelatedInputChange,
+  onCreateTerm,
+  onUpdateTerm,
+  onDeleteTerm,
   onCloseCard,
   onListSelect,
   onMindmapHover,
@@ -139,6 +159,19 @@ export const GlossaryView = ({
           </div>
         </div>
       </section>
+
+      <TermManagementForm
+        actionMessage={actionMessage}
+        isSaving={isSaving}
+        onCreateTerm={onCreateTerm}
+        onDeleteTerm={onDeleteTerm}
+        onFormChange={onFormChange}
+        onRelatedInputChange={onRelatedInputChange}
+        onUpdateTerm={onUpdateTerm}
+        relatedInput={relatedInput}
+        selectedKeyword={selectedId}
+        termForm={termForm}
+      />
 
       {isCardOpen && (
         <div className={styles.cardOverlay} role="dialog" aria-modal="true">

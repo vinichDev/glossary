@@ -2,7 +2,7 @@ import { Term } from "@/shared/types/term";
 
 export const terms: Term[] = [
   {
-    id: "rendering",
+    keyword: "rendering",
     title: "Рендеринг",
     description:
       "Процесс формирования отображаемого пользователю интерфейса (HTML/DOM) из данных и шаблонов/компонентов, на клиенте или на сервере.",
@@ -11,7 +11,7 @@ export const terms: Term[] = [
     related: ["csr", "ssr", "pre-rendering", "hydration", "streaming"]
   },
   {
-    id: "csr",
+    keyword: "csr",
     title: "CSR (Client-Side Rendering)",
     description:
       "Подход, при котором HTML-контент генерируется в браузере с помощью JavaScript.",
@@ -20,7 +20,7 @@ export const terms: Term[] = [
     related: ["ssr", "hydration", "rendering"]
   },
   {
-    id: "ssr",
+    keyword: "ssr",
     title: "SSR (Server-Side Rendering)",
     description:
       "Подход, при котором HTML-контент генерируется на сервере и отправляется клиенту.",
@@ -29,7 +29,7 @@ export const terms: Term[] = [
     related: ["csr", "hydration", "pre-rendering", "rendering"]
   },
   {
-    id: "pre-rendering",
+    keyword: "pre-rendering",
     title: "Предрендеринг (Pre-rendering)",
     description:
       "Генерация HTML заранее (на этапе сборки или на запросе), чтобы отдавать готовую разметку быстрее.",
@@ -38,7 +38,7 @@ export const terms: Term[] = [
     related: ["ssg", "ssr", "nextjs"]
   },
   {
-    id: "ssg",
+    keyword: "ssg",
     title: "SSG (Static Site Generation)",
     description:
       "Статическая генерация: HTML страницы создаётся во время сборки и переиспользуется на каждом запросе.",
@@ -48,7 +48,7 @@ export const terms: Term[] = [
     related: ["pre-rendering", "isr", "cdn"]
   },
   {
-    id: "isr",
+    keyword: "isr",
     title: "ISR (Incremental Static Regeneration)",
     description:
       "Подход, позволяющий обновлять статические страницы во время выполнения без полной пересборки сайта.",
@@ -58,7 +58,7 @@ export const terms: Term[] = [
     related: ["ssg", "revalidation", "caching"]
   },
   {
-    id: "hydration",
+    keyword: "hydration",
     title: "Гидратация (Hydration)",
     description:
       "Подключение React к уже существующему HTML (сгенерированному на сервере), чтобы «оживить» интерфейс и сделать его интерактивным.",
@@ -67,7 +67,7 @@ export const terms: Term[] = [
     related: ["ssr", "csr", "react", "tti"]
   },
   {
-    id: "streaming",
+    keyword: "streaming",
     title: "Потоковый рендеринг (Streaming)",
     description:
       "Отдача UI частями по мере готовности, чтобы пользователь видел контент раньше полной готовности страницы.",
@@ -76,7 +76,7 @@ export const terms: Term[] = [
     related: ["suspense", "app-router", "fcp"]
   },
   {
-    id: "suspense",
+    keyword: "suspense",
     title: "React Suspense",
     description:
       "Механизм React для показа fallback-интерфейса, пока часть дерева UI «ожидает» данные/код и не может быть отрендерена.",
@@ -85,7 +85,7 @@ export const terms: Term[] = [
     related: ["streaming"]
   },
   {
-    id: "rsc",
+    keyword: "rsc",
     title: "RSC (React Server Components)",
     description:
       "Тип компонентов React, которые рендерятся в серверной среде (вне клиентского приложения) и помогают уменьшать клиентский JavaScript.",
@@ -94,7 +94,7 @@ export const terms: Term[] = [
     related: ["server-components", "client-components", "app-router"]
   },
   {
-    id: "server-components",
+    keyword: "server-components",
     title: "Server Components",
     description:
       "Компоненты, выполняющиеся в серверной среде (RSC): удобны для доступа к данным/бэкенду и снижения объёма JS на клиенте.",
@@ -103,7 +103,7 @@ export const terms: Term[] = [
     related: ["rsc", "client-components"]
   },
   {
-    id: "client-components",
+    keyword: "client-components",
     title: "Client Components",
     description:
       "Компоненты, выполняющиеся в браузере: поддерживают интерактивность, события, состояние и доступ к browser APIs.",
@@ -113,7 +113,7 @@ export const terms: Term[] = [
     related: ["use-client", "hydration", "rsc"]
   },
   {
-    id: "use-client",
+    keyword: "use-client",
     title: "Директива 'use client'",
     description:
       "Объявляет точку входа для компонентов, которые должны рендериться на клиенте и требуют возможностей браузера (state, events, browser APIs).",
@@ -122,7 +122,7 @@ export const terms: Term[] = [
     related: ["client-components", "app-router"]
   },
   {
-    id: "nextjs",
+    keyword: "nextjs",
     title: "Next.js",
     description:
       "React-фреймворк с поддержкой разных стратегий рендеринга, маршрутизации и серверных возможностей.",
@@ -131,7 +131,7 @@ export const terms: Term[] = [
     related: ["app-router", "pages-router", "ssr", "ssg", "isr"]
   },
   {
-    id: "pages-router",
+    keyword: "pages-router",
     title: "Pages Router",
     description:
       "Маршрутизация на основе каталога pages: файл в pages автоматически становится маршрутом.",
@@ -141,7 +141,7 @@ export const terms: Term[] = [
     related: ["app-router", "getstaticprops", "getserversideprops", "api-routes"]
   },
   {
-    id: "app-router",
+    keyword: "app-router",
     title: "App Router",
     description:
       "Маршрутизация на основе каталога app, построенная вокруг Server/Client Components, layouts и возможностей streaming/Suspense.",
@@ -150,7 +150,7 @@ export const terms: Term[] = [
     related: ["rsc", "route-handlers", "server-actions", "parallel-routes"]
   },
   {
-    id: "parallel-routes",
+    keyword: "parallel-routes",
     title: "Parallel Routes",
     description:
       "Позволяют одновременно или условно рендерить одну или несколько страниц в рамках одного layout.",
@@ -160,7 +160,7 @@ export const terms: Term[] = [
     related: ["app-router", "intercepting-routes"]
   },
   {
-    id: "intercepting-routes",
+    keyword: "intercepting-routes",
     title: "Intercepting Routes",
     description:
       "Позволяют загрузить маршрут из другой части приложения внутри текущего layout-контекста (часто для модалок/оверлеев).",
@@ -170,7 +170,7 @@ export const terms: Term[] = [
     related: ["app-router", "parallel-routes"]
   },
   {
-    id: "getstaticprops",
+    keyword: "getstaticprops",
     title: "getStaticProps",
     description:
       "Функция Next.js (Pages Router) для получения данных на этапе сборки (static generation).",
@@ -180,7 +180,7 @@ export const terms: Term[] = [
     related: ["pages-router", "ssg"]
   },
   {
-    id: "getserversideprops",
+    keyword: "getserversideprops",
     title: "getServerSideProps",
     description:
       "Функция Next.js (Pages Router) для получения данных и рендера страницы во время запроса (request time).",
@@ -190,7 +190,7 @@ export const terms: Term[] = [
     related: ["pages-router", "ssr"]
   },
   {
-    id: "api-routes",
+    keyword: "api-routes",
     title: "API Routes",
     description:
       "Механизм Pages Router для создания API-эндпоинтов внутри Next.js приложения.",
@@ -200,7 +200,7 @@ export const terms: Term[] = [
     related: ["pages-router", "route-handlers"]
   },
   {
-    id: "route-handlers",
+    keyword: "route-handlers",
     title: "Route Handlers",
     description:
       "Механизм App Router для создания обработчиков запросов для маршрута с использованием Web Request/Response APIs.",
@@ -209,7 +209,7 @@ export const terms: Term[] = [
     related: ["app-router"]
   },
   {
-    id: "server-actions",
+    keyword: "server-actions",
     title: "Server Actions",
     description:
       "Асинхронные функции, выполняющиеся на сервере; могут вызываться из Server/Client Components для форм и мутаций данных.",
@@ -219,7 +219,7 @@ export const terms: Term[] = [
     related: ["use-server", "revalidation", "caching"]
   },
   {
-    id: "use-server",
+    keyword: "use-server",
     title: "Директива 'use server'",
     description:
       "Помечает функцию или файл как выполняющиеся на сервере (Server Function).",
@@ -228,7 +228,7 @@ export const terms: Term[] = [
     related: ["server-actions", "rsc"]
   },
   {
-    id: "caching",
+    keyword: "caching",
     title: "Кэширование (Next.js)",
     description:
       "Набор механизмов, сохраняющих результаты вычислений/запросов и рендера, чтобы ускорять повторные запросы и снижать стоимость выполнения.",
@@ -237,7 +237,7 @@ export const terms: Term[] = [
     related: ["memoization", "revalidation", "isr"]
   },
   {
-    id: "revalidation",
+    keyword: "revalidation",
     title: "Ревалидация (Revalidation)",
     description:
       "Обновление (инвалидация/пересоздание) кэшированных данных/результатов без полной пересборки приложения.",
@@ -247,7 +247,7 @@ export const terms: Term[] = [
     related: ["caching", "isr", "server-actions"]
   },
   {
-    id: "metadata-api",
+    keyword: "metadata-api",
     title: "Metadata API (generateMetadata)",
     description:
       "API Next.js для задания метаданных (в т.ч. для SEO и шаринга): через static metadata или функцию generateMetadata.",
@@ -256,7 +256,7 @@ export const terms: Term[] = [
     related: ["seo", "app-router"]
   },
   {
-    id: "ttfb",
+    keyword: "ttfb",
     title: "TTFB (Time To First Byte)",
     description:
       "Метрика: время, которое требуется, чтобы сеть вернула первый байт ответа на запрос ресурса.",
@@ -265,7 +265,7 @@ export const terms: Term[] = [
     related: ["fcp", "performance"]
   },
   {
-    id: "fcp",
+    keyword: "fcp",
     title: "FCP (First Contentful Paint)",
     description:
       "Метрика: момент, когда браузер впервые отрисовал какой-либо контент из DOM (текст/изображение и т.п.).",
@@ -274,7 +274,7 @@ export const terms: Term[] = [
     related: ["ttfb", "tti", "performance"]
   },
   {
-    id: "tti",
+    keyword: "tti",
     title: "TTI (Time To Interactive)",
     description:
       "Лабораторная метрика, оценивающая, когда страница становится по-настоящему интерактивной (выглядит интерактивной и реально реагирует).",
@@ -283,7 +283,7 @@ export const terms: Term[] = [
     related: ["hydration", "performance"]
   },
   {
-    id: "lighthouse",
+    keyword: "lighthouse",
     title: "Lighthouse",
     description:
       "Автоматизированный инструмент аудита качества страниц: performance, accessibility, SEO и т.д.",
@@ -292,7 +292,7 @@ export const terms: Term[] = [
     related: ["performance", "seo", "ttfb", "fcp", "tti"]
   },
   {
-    id: "cdn",
+    keyword: "cdn",
     title: "CDN (Content Delivery Network)",
     description:
       "Географически распределённая сеть серверов, кэширующая контент ближе к пользователям для ускорения доставки.",
@@ -301,7 +301,7 @@ export const terms: Term[] = [
     related: ["ssg", "edge-network"]
   },
   {
-    id: "next-image",
+    keyword: "next-image",
     title: "next/image (Image Component)",
     description:
       "Компонент Next.js, расширяющий <img> и предоставляющий автоматическую оптимизацию изображений.",
@@ -310,7 +310,7 @@ export const terms: Term[] = [
     related: ["nextjs", "performance"]
   },
   {
-    id: "vercel-edge-network",
+    keyword: "vercel-edge-network",
     title: "Vercel Edge Network",
     description:
       "Глобальная edge-инфраструктура Vercel, через которую обрабатываются запросы и распределяются ресурсы ближе к пользователям.",
@@ -320,7 +320,7 @@ export const terms: Term[] = [
     related: ["edge-runtime", "cdn", "vercel-functions"]
   },
   {
-    id: "edge-runtime",
+    keyword: "edge-runtime",
     title: "Edge Runtime",
     description:
       "Среда выполнения на базе V8 для запуска кода в изолированных окружениях ближе к пользователям (edge).",
@@ -329,7 +329,7 @@ export const terms: Term[] = [
     related: ["vercel-edge-network", "vercel-functions"]
   },
   {
-    id: "vercel-functions",
+    keyword: "vercel-functions",
     title: "Vercel Functions (Serverless/Functions)",
     description:
       "Функции, которые Vercel запускает по запросу на основе кода приложения; не требуют управления серверами и масштабируются автоматически.",
@@ -338,7 +338,7 @@ export const terms: Term[] = [
     related: ["serverless-functions", "edge-runtime"]
   },
   {
-    id: "virtualization",
+    keyword: "virtualization",
     title: "Виртуализация списков (Windowing)",
     description:
       "Оптимизация рендера больших списков: в DOM рендерятся только элементы, видимые пользователю, а «окно» сдвигается при скролле.",
@@ -347,7 +347,7 @@ export const terms: Term[] = [
     related: ["performance", "rendering"]
   },
   {
-    id: "remix",
+    keyword: "remix",
     title: "Remix",
     description:
       "Full-stack веб-фреймворк, ориентированный на веб-стандарты и устойчивый UX (маршруты, загрузчики, actions и т.п.).",
@@ -356,7 +356,7 @@ export const terms: Term[] = [
     related: ["ssr", "rendering"]
   },
   {
-    id: "performance",
+    keyword: "performance",
     title: "Веб-производительность (user-centric metrics)",
     description:
       "Подход к измерению скорости и отзывчивости сайта метриками, ориентированными на пользователя (например, TTFB/FCP/TTI).",
