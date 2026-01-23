@@ -194,7 +194,9 @@ def serve() -> None:
     ]
     reflection.enable_server_reflection(service_names, server)
 
-    grpc_port = os.getenv("GRPC_PORT", "8000")
+    grpc_port = os.getenv("GRPC_PORT") or ""
+    if "$PORT" in grpc_port or grpc_port.strip() == "":
+        grpc_port = os.getenv("PORT", "8000")
     bind_result = server.add_insecure_port(f"[::]:{grpc_port}")
     if bind_result == 0:
         raise RuntimeError(f"Failed to bind gRPC server to port {grpc_port}")
