@@ -5,6 +5,8 @@ import os
 from concurrent.futures import ThreadPoolExecutor
 from contextlib import contextmanager
 from datetime import datetime, timezone
+from http.server import BaseHTTPRequestHandler, HTTPServer
+from threading import Thread
 
 import grpc
 from google.protobuf.json_format import MessageToDict
@@ -19,6 +21,17 @@ from app.proto import glossary_pb2, glossary_pb2_grpc
 from app.schemas import TermCreate, TermUpdate
 
 logger = logging.getLogger(__name__)
+
+
+class _HealthHandler(BaseHTTPRequestHandler):
+    def do_GET(self) -> None:  # noqa: N802
+        self.send_response(200)
+        self.send_header("Content-Type", "text/plain; charset=utf-8")
+        self.end_headers()
+        self.wfile.write(b"ok")
+
+    def log_message(self, format: str, *args) -> None:  # noqa: A002
+        return
 
 
 @contextmanager
@@ -181,13 +194,19 @@ def serve() -> None:
     ]
     reflection.enable_server_reflection(service_names, server)
 
-    port = os.getenv("GRPC_PORT", "8000")
-    bind_result = server.add_insecure_port(f"[::]:{port}")
+    grpc_port = os.getenv("GRPC_PORT", "8000")
+    bind_result = server.add_insecure_port(f"[::]:{grpc_port}")
     if bind_result == 0:
-        raise RuntimeError(f"Failed to bind gRPC server to port {port}")
+        raise RuntimeError(f"Failed to bind gRPC server to port {grpc_port}")
     server.start()
-    logger.info("gRPC server started on port %s", port)
-    print(f"gRPC server is running on port {port}...", flush=True)
+    logger.info("gRPC server started on port %s", grpc_port)
+    print(f"gRPC server is running on port {grpc_port}...", flush=True)
+
+    health_port = os.getenv("PORT")
+    if health_port and health_port != grpc_port:
+        httpd = HTTPServer(("0.0.0.0", int(health_port)), _HealthHandler)
+        Thread(target=httpd.serve_forever, daemon=True).start()
+        logger.info("HTTP health check started on port %s", health_port)
     server.wait_for_termination()
 
 
