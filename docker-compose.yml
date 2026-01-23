@@ -16,7 +16,7 @@ services:
     ports:
       - "3000:3000"
     environment:
-      GLOSSARY_API_URL: http://glossary-api:8000
+      GLOSSARY_GRPC_URL: glossary-api:8000
     depends_on:
       - glossary-api
 

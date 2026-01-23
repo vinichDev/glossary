@@ -1,0 +1,80 @@
+syntax = "proto3";
+
+package glossary.v1;
+
+import "google/protobuf/timestamp.proto";
+
+message Term {
+  int32 id = 1;
+  string keyword = 2;
+  string title = 3;
+  string description = 4;
+  string source = 5;
+  string source_url = 6;
+  repeated string related = 7;
+  google.protobuf.Timestamp created_at = 8;
+  google.protobuf.Timestamp updated_at = 9;
+}
+
+message TermInput {
+  string keyword = 1;
+  string title = 2;
+  string description = 3;
+  string source = 4;
+  string source_url = 5;
+  repeated string related = 6;
+}
+
+message TermUpdate {
+  string title = 1;
+  string description = 2;
+  string source = 3;
+  string source_url = 4;
+  repeated string related = 5;
+  bool clear_related = 6;
+}
+
+message ListTermsRequest {}
+
+message ListTermsResponse {
+  repeated Term terms = 1;
+}
+
+message GetTermRequest {
+  string keyword = 1;
+}
+
+message GetTermResponse {
+  Term term = 1;
+}
+
+message CreateTermRequest {
+  TermInput term = 1;
+}
+
+message CreateTermResponse {
+  Term term = 1;
+}
+
+message UpdateTermRequest {
+  string keyword = 1;
+  TermUpdate term = 2;
+}
+
+message UpdateTermResponse {
+  Term term = 1;
+}
+
+message DeleteTermRequest {
+  string keyword = 1;
+}
+
+message DeleteTermResponse {}
+
+service GlossaryService {
+  rpc ListTerms(ListTermsRequest) returns (ListTermsResponse);
+  rpc GetTerm(GetTermRequest) returns (GetTermResponse);
+  rpc CreateTerm(CreateTermRequest) returns (CreateTermResponse);
+  rpc UpdateTerm(UpdateTermRequest) returns (UpdateTermResponse);
+  rpc DeleteTerm(DeleteTermRequest) returns (DeleteTermResponse);
+}

@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from pydantic import BaseModel, Field
+from pydantic import AliasChoices, BaseModel, Field
 
 
 class TermBase(BaseModel):
@@ -9,7 +9,11 @@ class TermBase(BaseModel):
     description: str = Field(..., min_length=3)
     source: str = Field(..., min_length=2, max_length=200)
     source_url: str = Field(
-        ..., min_length=5, max_length=500, serialization_alias="sourceUrl", validation_alias="sourceUrl"
+        ...,
+        min_length=5,
+        max_length=500,
+        serialization_alias="sourceUrl",
+        validation_alias=AliasChoices("sourceUrl", "source_url"),
     )
     related: list[str] = Field(default_factory=list)
 
@@ -27,7 +31,7 @@ class TermUpdate(BaseModel):
         min_length=5,
         max_length=500,
         serialization_alias="sourceUrl",
-        validation_alias="sourceUrl",
+        validation_alias=AliasChoices("sourceUrl", "source_url"),
     )
     related: list[str] | None = None
 

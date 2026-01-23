@@ -1,5 +1,4 @@
 import "./globals.scss";
-import { YandexMetrika } from "@/shared/ui/YandexMetrika/YandexMetrika";
 
 export const metadata = {
   title: "Глоссарий терминов",
@@ -11,12 +10,10 @@ type RootLayoutProps = {
 };
 
 const RootLayout = ({ children }: RootLayoutProps) => {
-  const metrikaId = process.env.NEXT_PUBLIC_METRIKA_ID;
 
   return (
     <html lang="ru">
       <body>
-        <YandexMetrika counterId={metrikaId} />
         {children}
       </body>
     </html>

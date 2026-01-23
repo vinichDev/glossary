@@ -55,7 +55,7 @@ export const createTerm = async (payload: TermPayload): Promise<Term> => {
 
 export const updateTerm = async (
   keyword: string,
-  payload: Omit<TermPayload, "keyword">
+  payload: Partial<TermPayload>
 ): Promise<Term> => {
   const response = await fetch(`/api/terms/${keyword}`, {
     method: "PUT",

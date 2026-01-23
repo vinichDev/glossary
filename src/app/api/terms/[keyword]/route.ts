@@ -1,52 +1,75 @@
 import { NextResponse } from "next/server";
 
+import {
+  createTerm,
+  deleteTerm,
+  getTerm,
+  mapGrpcError,
+  updateTerm
+} from "@/entities/term/api/grpc";
+
 type Params = {
   params: {
     keyword: string;
   };
 };
 
-const API_BASE_URL = process.env.GLOSSARY_API_URL ?? "http://localhost:8000";
-
 export const GET = async (_request: Request, { params }: Params) => {
-  const response = await fetch(`${API_BASE_URL}/terms/${params.keyword}`, {
-    cache: "no-store"
-  });
+  try {
+    const term = await getTerm(params.keyword);
 
-  if (!response.ok) {
-    return NextResponse.json(
-      { error: "Term not found" },
-      { status: response.status }
-    );
+    if (!term) {
+      return NextResponse.json({ error: "Term not found" }, { status: 404 });
+    }
+
+    return NextResponse.json({ data: term });
+  } catch (error) {
+    const mapped = mapGrpcError(error as Parameters<typeof mapGrpcError>[0]);
+    return NextResponse.json({ error: mapped.message }, { status: mapped.status });
   }
-
-  const term = await response.json();
-  return NextResponse.json({ data: term });
 };
 
 export const PUT = async (request: Request, { params }: Params) => {
   const payload = await request.json();
-  const response = await fetch(`${API_BASE_URL}/terms/${params.keyword}`, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload)
-  });
 
-  if (!response.ok) {
-    return NextResponse.json(
-      { error: "Failed to update term" },
-      { status: response.status }
-    );
+  try {
+    if (payload.keyword && payload.keyword !== params.keyword) {
+      const created = await createTerm(payload);
+
+      if (!created) {
+        return NextResponse.json(
+          { error: "Failed to update term" },
+          { status: 500 }
+        );
+      }
+
+      await deleteTerm(params.keyword);
+      return NextResponse.json({ data: created });
+    }
+
+    const term = await updateTerm(params.keyword, payload);
+
+    if (!term) {
+      return NextResponse.json(
+        { error: "Failed to update term" },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json({ data: term });
+  } catch (error) {
+    const mapped = mapGrpcError(error as Parameters<typeof mapGrpcError>[0]);
+    return NextResponse.json({ error: mapped.message }, { status: mapped.status });
   }
-
-  const term = await response.json();
-  return NextResponse.json({ data: term });
 };
 
 export const DELETE = async (_request: Request, { params }: Params) => {
-  const response = await fetch(`${API_BASE_URL}/terms/${params.keyword}`, {
-    method: "DELETE"
-  });
+  try {
+    await deleteTerm(params.keyword);
 
-  return new NextResponse(null, { status: response.status });
+    return new NextResponse(null, { status: 204 });
+  } catch (error) {
+    const mapped = mapGrpcError(error as Parameters<typeof mapGrpcError>[0]);
+    return NextResponse.json({ error: mapped.message }, { status: mapped.status });
+  }
 };

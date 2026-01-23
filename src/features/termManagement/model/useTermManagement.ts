@@ -81,6 +81,7 @@ export const useTermManagement = ({
     setActionMessage(null);
     try {
       const payload = {
+        keyword: formValues.keyword,
         title: formValues.title,
         description: formValues.description,
         source: formValues.source,
@@ -88,7 +89,7 @@ export const useTermManagement = ({
         related: buildRelated()
       };
       const updated = await updateTerm(selectedKeyword, payload);
-        onSelectKeyword(updated.keyword);
+      onSelectKeyword(updated.keyword);
       setActionMessage("Термин обновлён.");
       onRefreshTerms();
     } catch (error) {
