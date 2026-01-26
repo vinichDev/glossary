@@ -1,22 +1,31 @@
 # syntax=docker/dockerfile:1
-FROM node:20-alpine AS deps
-WORKDIR /app
-COPY package.json ./
-RUN npm install
 
-FROM node:20-alpine AS builder
+FROM node:20-bookworm-slim AS deps
+WORKDIR /app
+
+# нужно, чтобы Prisma нормально определила openssl
+RUN apt-get update -y && apt-get install -y openssl \
+  && rm -rf /var/lib/apt/lists/*
+
+COPY package.json ./
+COPY prisma ./prisma
+RUN npm install
+RUN npx prisma generate
+
+FROM node:20-bookworm-slim AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . ./
 RUN npm run build
 
-FROM node:20-alpine AS runner
+FROM node:20-bookworm-slim AS runner
 WORKDIR /app
 ENV NODE_ENV=production
-COPY --from=builder /app/package.json ./package.json
-COPY --from=builder /app/next.config.mjs ./next.config.mjs
-COPY --from=builder /app/.next ./.next
-COPY --from=builder /app/public ./public
-COPY --from=builder /app/node_modules ./node_modules
+
+# (не обязательно, но не повредит)
+RUN apt-get update -y && apt-get install -y openssl \
+  && rm -rf /var/lib/apt/lists/*
+
+COPY --from=builder /app ./
 EXPOSE 3000
 CMD ["npm", "start"]

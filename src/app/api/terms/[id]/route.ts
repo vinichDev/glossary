@@ -1,18 +1,24 @@
-import { NextResponse } from "next/server";
-import { terms } from "@/shared/data/terms";
+export const dynamic = "force-dynamic";
 
-type Params = {
-  params: {
+import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/shared/lib/prisma";
+
+type Ctx = {
+  params: Promise<{
     id: string;
-  };
+  }>;
 };
 
-export const GET = async (_request: Request, { params }: Params) => {
-  const term = terms.find((item) => item.id === params.id);
+export async function GET(_request: NextRequest, { params }: Ctx) {
+  const { id } = await params;
+
+  const term = await prisma.term.findUnique({
+    where: { id },
+  });
 
   if (!term) {
     return NextResponse.json({ error: "Term not found" }, { status: 404 });
   }
 
   return NextResponse.json({ data: term });
-};
+}
