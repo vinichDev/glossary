@@ -51,17 +51,35 @@ export const useMindmapInstance = ({
       isDagreRegistered = true;
     }
 
-    const cyStyles = createMindmapStyles();
-
     const cyInstance = cytoscape({
       container: containerRef.current,
       elements: [],
-      style: cyStyles,
+      style: createMindmapStyles(),
       layout: LAYOUT_OPTIONS,
       minZoom: MIN_ZOOM,
       maxZoom: MAX_ZOOM,
       wheelSensitivity: WHEEL_SENSITIVITY
     });
+
+    let isActive = true;
+    const applyStyles = () => {
+      if (!isActive || cyInstance.destroyed()) {
+        return;
+      }
+      cyInstance.style(createMindmapStyles());
+    };
+
+    applyStyles();
+    const animationFrameId =
+      typeof window !== "undefined"
+        ? window.requestAnimationFrame(applyStyles)
+        : null;
+
+    const handleWindowLoad = () => applyStyles();
+
+    if (typeof window !== "undefined") {
+      window.addEventListener("load", handleWindowLoad);
+    }
 
     cyInstance.on("tap", "node", (event) => {
       const nextId = event.target.id();
@@ -89,6 +107,13 @@ export const useMindmapInstance = ({
     cyRef.current = cyInstance;
 
     return () => {
+      isActive = false;
+      if (typeof window !== "undefined") {
+        window.removeEventListener("load", handleWindowLoad);
+        if (animationFrameId !== null) {
+          window.cancelAnimationFrame(animationFrameId);
+        }
+      }
       cyInstance.destroy();
       cyRef.current = null;
     };

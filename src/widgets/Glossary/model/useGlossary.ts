@@ -1,12 +1,14 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { termSummaries } from "@/shared/data/termSummaries";
-import type { Term } from "@/shared/types/term";
-import { fetchTermById } from "@/widgets/Glossary/lib/glossaryApi";
+import type { Term, TermSummary } from "@/shared/types/term";
+import { fetchTermById, fetchTermSummaries } from "@/widgets/Glossary/lib/glossaryApi";
 import { buildTermSummaryMap, getRelatedTerms } from "@/widgets/Glossary/lib/glossaryTerms";
 
 export const useGlossary = () => {
+  const [termSummaries, setTermSummaries] = useState<TermSummary[]>(
+    []
+  );
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [selectedTerm, setSelectedTerm] = useState<Term | null>(null);
   const [isCardOpen, setIsCardOpen] = useState(false);
@@ -20,11 +22,30 @@ export const useGlossary = () => {
     setIsCardOpen(false);
   }, []);
 
-  const termSummaryMap = useMemo(() => buildTermSummaryMap(termSummaries), []);
+  const termSummaryMap = useMemo(
+    () => buildTermSummaryMap(termSummaries),
+    [termSummaries]
+  );
 
   const relatedTerms = useMemo(() => {
     return getRelatedTerms(selectedTerm, termSummaryMap);
   }, [selectedTerm, termSummaryMap]);
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    fetchTermSummaries(controller.signal)
+      .then((summaries) => {
+        setTermSummaries(summaries);
+      })
+      .catch((error) => {
+        if (error.name !== "AbortError") {
+          setTermSummaries([]);
+        }
+      });
+
+    return () => controller.abort();
+  }, []);
 
   useEffect(() => {
     if (!selectedId) {
