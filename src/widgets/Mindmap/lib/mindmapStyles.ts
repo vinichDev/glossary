@@ -6,14 +6,19 @@ type MindmapStylesheet = {
 };
 
 export const resolveCssVar = (name: string, fallback: string) => {
-  if (typeof window === "undefined") {
-    return fallback;
-  }
-  const value = getComputedStyle(document.documentElement)
-    .getPropertyValue(name)
-    .trim();
-  return value || fallback;
+  if (typeof window === "undefined") return fallback;
+
+  const probe = document.createElement("div");
+  probe.style.display = "none";
+  probe.style.backgroundColor = `var(${name})`;
+  document.body.appendChild(probe);
+
+  const value = getComputedStyle(probe).backgroundColor; // уже rgb(...)
+  probe.remove();
+
+  return value && value !== "rgba(0, 0, 0, 0)" ? value : fallback;
 };
+
 
 export const createMindmapStyles = (): MindmapStylesheet[] => [
   {

@@ -63,11 +63,10 @@ export const useMindmapInstance = ({
 
     let isActive = true;
     const applyStyles = () => {
-      if (!isActive || cyInstance.destroyed()) {
-        return;
-      }
-      cyInstance.style(createMindmapStyles());
+      if (!isActive || cyInstance.destroyed()) return;
+      cyInstance.style(createMindmapStyles()).update();
     };
+
 
     applyStyles();
     const animationFrameId =
