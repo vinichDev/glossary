@@ -42,10 +42,11 @@ export const useGlossaryTutorial = ({
     ) {
       return storedVariant as (typeof knownVariants)[number];
     }
-    const variant =
-      Math.random() < 0.5
-        ? GLOSSARY_TUTORIAL_VARIANTS.withTutorial
-        : GLOSSARY_TUTORIAL_VARIANTS.withoutTutorial;
+    // const variant =
+    //   Math.random() < 0.5
+    //     ? GLOSSARY_TUTORIAL_VARIANTS.withTutorial
+    //     : GLOSSARY_TUTORIAL_VARIANTS.withoutTutorial;
+    const variant = GLOSSARY_TUTORIAL_VARIANTS.withTutorial;
     window.localStorage.setItem(GLOSSARY_TUTORIAL_VARIANT_STORAGE_KEY, variant);
     return variant;
   }, []);
