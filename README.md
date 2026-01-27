@@ -37,22 +37,38 @@ npm run db:migrate
 npm run db:seed
 ```
 
-## Развертывание на Vercel
+## Деплой на Vercel (Next.js + Prisma + Postgres)
 
-1. Создайте новый проект в Vercel и подключите этот репозиторий.
-2. В разделе Storage создайте базу **Vercel Postgres** и подключите её к проекту.
-3. Убедитесь, что в переменные окружения проекта добавлен `DATABASE_URL` (Vercel создаст его автоматически при подключении Postgres).
-4. Локально выполните миграции в базу Vercel:
+### 1) Подключите Postgres
+В Vercel: **Project → Storage → Connect Database** → выберите Postgres-провайдера (например Neon).  
+Vercel сам добавит переменные окружения.
+
+### 3) Миграции при деплое
+С помощью `vercel-build`:
+
+```json
+{
+  "scripts": {
+    "vercel-build": "npx prisma generate && npx prisma migrate deploy && next build"
+  }
+}
+```
+
+### 4) Seed (начальные данные)
+На Vercel нет SSH/терминала, поэтому seed можно запустить локально (или через CI):
 
 ```bash
-vercel env pull .env
-npm run db:migrate
-npm run db:seed
+npm i -g vercel
+vercel login
+vercel link
+vercel env pull .env.local
+cp .env.local .env
+npx prisma db seed
 ```
 
 5. Запустите деплой — после сборки Next.js будет использовать подключенную базу.
 
-## Web API
+## API
 
 - `GET /api/terms` — список терминов
 - `GET /api/terms/{id}` — термин по идентификатору
